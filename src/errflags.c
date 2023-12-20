@@ -24,6 +24,10 @@ static inline char * str_flag(err_flag flag)
 
 void er_report( FILE * flux, const char * repport_msg, const char * error_msg ,err_flag flag){
     /*
+    flux -> not null 
+    repport_msg -> not null 
+    error_msg -> not null 
+    flag -> 
     the real repport function of the project 
     every variant of it will rely on it 
     */

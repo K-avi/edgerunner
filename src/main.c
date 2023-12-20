@@ -2,6 +2,9 @@
 #include "errflags.h"
 #include "game.h"
 
+
+
+
 void print_help(void){
     printf("placeholder\n");
 }
@@ -9,6 +12,7 @@ void print_help(void){
 int main(int argc , char ** argv){
     
     //parse options 
+
     if(!argc){
         print_help(); 
         return 0 ;
