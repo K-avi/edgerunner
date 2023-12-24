@@ -13,9 +13,13 @@ game.h defines the game related functions.
 
 #include "common.h"
 #include "errflags.h"
+#include <ncurses.h>
+#include "graph_base.h"
+#include "player_curses.h"
+#include "dynarr.h"
 /*
 call once in the main fn
 */
-extern err_flag start_game(void);
+extern err_flag start_game(WINDOW * w, er_graph * g, dynarr_points * darp,er_player * p );
 
 #endif

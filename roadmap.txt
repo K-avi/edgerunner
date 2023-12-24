@@ -4,9 +4,11 @@ dealaunay triangulation is annoying to implement
 I'll juste -> generate a lattice -> add some edges (diagonally)
 -> remove some points / edges 
 
+
+-> generate lattice coordinates first (just enumerate points and lexi sort them or generate them 
+already lexi sorted)
 -> maybe shuffle coordinates a bit idk yet 
 -> dassit
-
 
 --> then I'll move on to ncurses and playing the game. 
 
@@ -42,7 +44,7 @@ roadmap :
 - I think I should begin with implementing the map generation 
 
 - Then either move on to printing the map (using ncurses)
-- or making the player to move
+- or making the player / movement
 
 - ennemy IA will be the last (very basic at first and then I might implement fancier stuff)
 
@@ -57,10 +59,20 @@ todo :
 -> check adj lists functions ; done 
 -> implement basic graph manipulation ; done 
 
--> implement the graph generation algorithm (might be a lot of work )
+-> implement the graph generation algorithm (might be a lot of work ) 
+    -> done 
+    -> atm the graph can be non-connex, fix it somehow.
+    -> move the graph coordinates a bit 
+
 
 -> implement the basic game system with ncurses 
-    -> printing graph 
+    -> printing graph -> somewhat done
+    -> add a function to print only a link 
+        instead of the whole graph 
+    -> add a function to print the beginning of a nodes link
+
+-> game part : 
+    -> main game loop 
     -> level changing 
     -> movement of p1 
     -> score calculation 
@@ -76,3 +88,9 @@ todo :
   -> AI vs AI mode 
   -> screensaver mode 
   -> documentation 
+
+
+use this for nodes instead of O 
+   __  
+  /@ \ 
+  \__/

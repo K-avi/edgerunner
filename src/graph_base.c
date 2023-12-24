@@ -106,7 +106,7 @@ static err_flag fprint_adjlist( FILE * flux, const er_adjlist * alist ){
     if(!alist){
         fprintf(flux, "null pointer passed as an adjlist\n");
     }else{
-        fprintf(flux, "node of reference %p with %u neigboors\n", (void*)alist, alist->cur);
+        fprintf(flux, "node of reference %p with %u neighboors : ", (void*)alist, alist->cur);
         for(uint32_t i = 0 ; i < alist->cur ; i ++){
             fprintf(flux, "%p ", (void*) alist->neighboors_ref[i]);
         }

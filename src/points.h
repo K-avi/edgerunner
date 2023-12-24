@@ -16,6 +16,6 @@ be useless at the moment but I'll probably need it later.
 #include "dynarr.h"
 #include "errflags.h"
 
-extern err_flag gen_points( uint32_t nbpoints, uint32_t max,  dynarr_points * darp);
-
+extern err_flag gen_rand_points( uint32_t nbpoints, uint32_t max,  dynarr_points * darp);
+extern err_flag gen_coordinates(uint32_t n, uint32_t m , dynarr_points * darp);
 #endif 

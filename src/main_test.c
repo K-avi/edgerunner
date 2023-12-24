@@ -4,6 +4,10 @@
 #include <time.h>
 #include "graph_base.h"
 #include "graph_gen.h"
+#include "graph_curses.h"
+
+#include <ncurses.h>
+#include "game.h"
 
 int main( int argc , char ** argv){
 
@@ -55,12 +59,47 @@ int main( int argc , char ** argv){
 
     free(adjlist.neighboors_ref);
     */
+
+   /*
     declare_graph(g);
+    generate_lattice(&g,  6 );
+    randomize_lattice(&g, 6, 0.2,0.2,0.8,0.8);
+    FILE * f  = fopen("dump", "w");
+    fprint_graph(f,&g);
+    fclose(f);
+    declare_dynnar(dynarr_points, d);
+    init_dynp(&d,32);
+    gen_coordinates(6,6,&d);
 
-    generate_lattice(&g,  4 );
+   
+    initscr();
+    cbreak();
+    
+ 
+    //printw("haiiiii :O\n");
+    wprintw_graph(stdscr,&d,18,5,&g);
+   
+    // clear();
+   
+    //refresh();
+    getch();
 
-    fprint_graph(stdout, &g);
+    endwin();
+    free_dynp(&d);
+    free_graph(&g);*/
 
-    free_graph(&g);
+     initscr();
+
+    declare_graph(g);
+    declare_dynnar(dynarr_points, darp);
+    er_player p;
+    p.ch = '@';
+    p.cur_node = NULL; 
+    p.x = 0 ; 
+    p.y = 0 ;
+    //declare_er_player(p,0,0);
+    
+    start_game(stdscr,&g,&darp, &p);
+     endwin();
     return 0 ; 
 }
