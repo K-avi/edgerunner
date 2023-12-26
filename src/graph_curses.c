@@ -43,11 +43,11 @@ static err_flag draw_diag_ur(WINDOW * w, chtype ch, er_points p1, er_points p2 )
     }
 
     return ERR_OK;
-}//doesnt check for args; not tested 
+}//doesnt check for args;
 
-static err_flag draw_diag_dl(WINDOW * w, chtype ch, er_points p1, er_points p2 ){
+static err_flag draw_diag_dr(WINDOW * w, chtype ch, er_points p1, er_points p2 ){
     /*
-    diagonal up left (p1.y <  p1.y && p2.x > p1.x)
+    diagonal down right (p1.y <  p1.y && p2.x > p1.x)
     */
 
     uint32_t nb_down = p1.y - p2.y ;
@@ -85,10 +85,8 @@ static err_flag draw_diag_dl(WINDOW * w, chtype ch, er_points p1, er_points p2 )
         max--; 
     }
     wrefresh(w);
-
    return ERR_OK;
-}
-
+}//doesnt check args
 
 static err_flag wprintw_edges(WINDOW * w, dynarr_points * darp, uint32_t distx, uint32_t disty, er_graph * g){
 
@@ -120,15 +118,14 @@ static err_flag wprintw_edges(WINDOW * w, dynarr_points * darp, uint32_t distx, 
                         draw_diag_ur(w,ACS_BULLET,p1,p2);
                     }else{//p1.y > p2.y
                         p2.y+=1;
-                        draw_diag_dl(w,ACS_BULLET,p1,p2);
+                        draw_diag_dr(w,ACS_BULLET,p1,p2);
                     }
                 }
             }
         }
     }
-
     return ERR_OK;
-}//not finished
+}//doesnt check for shit 
 
 static err_flag wprintw_nodes(WINDOW * w, uint32_t distx, uint32_t disty, dynarr_points * darp){
     
@@ -137,17 +134,7 @@ static err_flag wprintw_nodes(WINDOW * w, uint32_t distx, uint32_t disty, dynarr
     }
     wrefresh(w);
     return ERR_OK;
-}
-
-err_flag print_link(WINDOW * w, uint32_t distx, uint32_t disty, er_points p1, er_points p2){
-
-    mvwprintw(w, p1.y*disty, p1.x*distx,"O");
-    mvwprintw(w, p2.y*disty, p2.x*distx,"O");
-
-    
-
-    return ERR_OK;
-}//not done
+}//works ; doenst check for shit
 
 
 err_flag wprintw_graph(WINDOW * w, dynarr_points * darp, uint32_t distx, uint32_t disty, er_graph * g){
@@ -156,3 +143,53 @@ err_flag wprintw_graph(WINDOW * w, dynarr_points * darp, uint32_t distx, uint32_
     wprintw_edges(w,darp,distx,disty,g);
     return ERR_OK;
 }//doesn't do checks atm ; not finished
+//actually I should make a function to print links.
+
+err_flag wprint_link(WINDOW * w, er_points * p1, er_points * p2, uint32_t distx, uint32_t disty){
+    /*
+    too lazy to write comment smh
+    */
+    wmove(w,p1->y*disty,p1->x*distx);
+    waddch(w,'O');
+
+    wmove(w,p2->y*disty,p2->x*distx);
+    waddch(w,'O');
+
+    if(p1->x == p2->x){
+        
+        if(p1->y > p2->y){
+            wmove(w,p2->y,p2->x);
+            wvline(w,ACS_BTEE,p1->y);
+
+        }else if (p1->y < p2->y){
+            wmove(w,p1->y,p1->x);
+            wvline(w,ACS_BTEE, p2->y);
+        }else{
+            ;
+        }
+    }else if(p1->x < p2->x){
+
+        if(p1->y > p2->y){
+            draw_diag_dr(w, ACS_BULLET, *p1,*p2);
+        }else if(p1->y < p2->y){
+            draw_diag_ur(w, ACS_BULLET, *p1,*p2);
+        }else{// if(p1->y == p2->y)
+            wmove(w, p1->y, p1->x);
+            whline(w,ACS_DIAMOND, p2->x);
+        }
+    }else{ // if(p1->x > p2->x )
+        if(p1->y > p2->y){
+            draw_diag_dr(w, ACS_BULLET, *p2,*p1);
+        }else if(p1->y < p2->y){
+            draw_diag_ur(w, ACS_BULLET, *p2,*p1);
+        }else{// if(p1->y == p2->y)
+            wmove(w, p2->y, p2->x);
+            whline(w,ACS_DIAMOND, p1->x);
+        }
+    }
+    wrefresh(w);
+    return ERR_OK;
+}//not tested; 100% wrong I think
+//writing clever code is for babies we stan big ass disjunctive forms in this house. 
+//I wanna handle (a^b) v (~a^b) v (a^~b) v etc ? splendid lemme write all of the cases then. 
+

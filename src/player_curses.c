@@ -50,3 +50,15 @@ err_flag wprint_entity(WINDOW * w , er_player * pl, uint32_t distx, uint32_t dis
     wrefresh(w);
     return ERR_OK;
 }
+
+err_flag wprint_surroundings(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g ){
+    /*
+    */
+   for(uint32_t i = 0 ; i < en->cur_node->cur; i++){
+        uint32_t index = en->cur_node->neighboors_ref[i] - g->adjacency_lists;
+        wmove(w, darp->elems[index].y*disty, darp->elems[index].x*distx);
+        waddch(w,i+ '0');
+   }
+   wrefresh(w);
+   return ERR_OK;
+}

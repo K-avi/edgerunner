@@ -90,7 +90,25 @@ todo :
   -> documentation 
 
 
-use this for nodes instead of O 
-   __  
-  /@ \ 
-  \__/
+ffs stop passing distx and disty to every function and fucking multiply it directly
+
+at some point I'll change the graphics to smtg like this 
+in order to look less like rogue :O
+
+
+
+    __ 
+   /% \ 
+   \__/ 
+    #
+    #
+   #
+  #__         __   
+  /@ \#######/0 \       
+  \__/       \__/  
+   #  #
+   #   ##
+  #__    ##
+  /1 \     ##__  
+  \__/      /2 \  
+            \__/  

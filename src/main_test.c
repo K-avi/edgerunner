@@ -88,7 +88,9 @@ int main( int argc , char ** argv){
     free_dynp(&d);
     free_graph(&g);*/
 
-     initscr();
+    initscr();
+    noecho();
+    curs_set(0);
 
     declare_graph(g);
     declare_dynnar(dynarr_points, darp);
@@ -100,6 +102,7 @@ int main( int argc , char ** argv){
     //declare_er_player(p,0,0);
     
     start_game(stdscr,&g,&darp, &p);
-     endwin();
+    endwin();
+
     return 0 ; 
 }
