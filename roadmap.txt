@@ -1,93 +1,42 @@
-generate graph like a baby 
+version alpha : ---------------------------
 
-dealaunay triangulation is annoying to implement 
-I'll juste -> generate a lattice -> add some edges (diagonally)
--> remove some points / edges 
+graph generation : 
+-> make sure the graph is connex every time 
 
-
--> generate lattice coordinates first (just enumerate points and lexi sort them or generate them 
-already lexi sorted)
--> maybe shuffle coordinates a bit idk yet 
--> dassit
-
---> then I'll move on to ncurses and playing the game. 
-
--> I might come back to graph gen at a later point but it's a lot of 
-effort for a little result so I won't do it just now. 
+"graphics" :
+-> ascii art for nodes / links (very important)
+-> create a menu in a window 
 
 
+ennemy : 1
+-> basic AI (bfs)
+    -> implement a dequeue
+    -> implement the bfs
 
-adj list but not a fancy clever one like I did in walking on graphs cuz 
-I might want to remove nodes / links at some point down the line 
-
-edgerunner aims to be a simple cli game where you escape a labyrinth while being pursued
-by an evil ennemy. Very similar to the the OG BSD rogue in that sense.
-
-the "labyrinth" is actually a random planar graph generated with delaunay triangulation.
-the project is very early atm. the "frontend" of the game will be handled with ncurses
-
-
-structure of the program : 
-
-main : parse arguments (game mode and all)
-
-game : start the level 
-    -> lvl_start()
-        -> gen_graph : generates the level
-        -> turn : play while level not over 
-            -> parses movement / quit -> makes a move 
-            -> IA makes a move 
+game : 
+->change graph generation depending on the level 
+->add an ennemy after a certain level
 
 
-roadmap : 
+misc : 
+->code documentation 
+->code refactoring (merge some files)
 
-- I think I should begin with implementing the map generation 
+version beta / 1.0 : -----------------------
 
-- Then either move on to printing the map (using ncurses)
-- or making the player / movement
+"graphics" :
+-> colors (maybe 1.0 idk how it works in ncurses)
 
-- ennemy IA will be the last (very basic at first and then I might implement fancier stuff)
+ennemy : 
+-> AI that isn't too dumb (ask fox, maybe 1.0)
 
--> to make the game cool I think the player should see the ennemy but not it's position 
+game : 
+-> save scores somewhere
+-> add special nodes (teleport nodes)
 
--> when reaching higher lever, the graph could get bigger / more ennemies could be added 
-
--> maybe add a screensaver version (cool visuals :O )
-
-todo : 
-
--> check adj lists functions ; done 
--> implement basic graph manipulation ; done 
-
--> implement the graph generation algorithm (might be a lot of work ) 
-    -> done 
-    -> atm the graph can be non-connex, fix it somehow.
-    -> move the graph coordinates a bit 
-
-
--> implement the basic game system with ncurses 
-    -> printing graph -> somewhat done
-    -> add a function to print only a link 
-        instead of the whole graph 
-    -> add a function to print the beginning of a nodes link
-
--> game part : 
-    -> main game loop 
-    -> level changing 
-    -> movement of p1 
-    -> score calculation 
-    -> ennemy movement 
--> implement the ennemy AI 
-
--> misc stuff
-  -> score saving 
-  -> build script
-  -> fancier AI 
-  -> fancier map generation
-  -> 2 players mode 
-  -> AI vs AI mode 
-  -> screensaver mode 
-  -> documentation 
+misc : 
+AI vs AI screensaver mode
+2 player mode
 
 
 ffs stop passing distx and disty to every function and fucking multiply it directly
@@ -97,18 +46,17 @@ in order to look less like rogue :O
 
 
 
-    __ 
-   /% \ 
-   \__/ 
-    #
-    #
-   #
-  #__         __   
-  /@ \#######/0 \       
-  \__/       \__/  
+    __     __ 
+   /% \   /! \ 
+   \__/   \__/  
+    #     ##
+    #   ##
+   #  ##
+  #__#      __   
+  /@ \#####/0 \       
+  \__/     \__/  
    #  #
-   #   ##
-  #__    ##
-  /1 \     ##__  
-  \__/      /2 \  
-            \__/  
+  #__  ##
+  /1 \    ##__  
+  \__/     /2 \  
+           \__/  

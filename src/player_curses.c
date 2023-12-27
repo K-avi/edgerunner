@@ -1,6 +1,7 @@
 #include "player_curses.h"
 #include "dynarr.h"
 #include "ncurses.h"
+#include "graph_curses.h"
 
 static err_flag init_player_pos(er_player * pl , er_graph * g,  dynarr_points * darp, uint32_t * player_index){
     /*
@@ -17,7 +18,7 @@ static err_flag init_player_pos(er_player * pl , er_graph * g,  dynarr_points * 
    return ERR_OK;
 }
 
-static err_flag init_exit_pos(er_exit * ex , er_graph * g,  dynarr_points * darp, uint32_t player_index){
+static err_flag init_exit_pos(er_exit * ex , er_graph * g,  dynarr_points * darp, uint32_t player_index, uint32_t * ex_pos){
     /*
     darp -> not null & init 
     pl -> not null & init
@@ -31,15 +32,34 @@ static err_flag init_exit_pos(er_exit * ex , er_graph * g,  dynarr_points * darp
     ex->x = darp->elems[ex_index].x;
     ex->y = darp->elems[ex_index].y;
     ex->cur_node = &g->adjacency_lists[ex_index];
+   *ex_pos = ex_index;
+   return ERR_OK;
+}
+
+static err_flag init_en_pos(er_ennemy * en , er_graph * g,  dynarr_points * darp, uint32_t player_index, uint32_t exit_index){
+    /*
+    darp -> not null & init 
+    pl -> not null & init
+    */
+
+   uint32_t en_index = rand()%darp->cur ;
+   while(en_index == player_index || en_index == exit_index){
+    en_index = rand()%darp->cur;
+   }
+
+    en->x = darp->elems[en_index].x;
+    en->y = darp->elems[en_index].y;
+    en->cur_node = &g->adjacency_lists[en_index];
 
    return ERR_OK;
 }
 
-err_flag init_ent_pos(er_exit * ex, er_player* pl, er_graph * g,  dynarr_points * darp){
+err_flag init_ent_pos(er_exit * ex, er_player* pl, er_ennemy * en, er_graph * g,  dynarr_points * darp){
     
-    uint32_t pl_i;
+    uint32_t pl_i, ex_i;
     init_player_pos(pl,g,darp,&pl_i);
-    init_exit_pos(ex,g,darp,pl_i);
+    init_exit_pos(ex,g,darp,pl_i, &ex_i);
+    init_en_pos(en,g,darp,pl_i, ex_i);
     return ERR_OK;
 }
 
@@ -54,11 +74,24 @@ err_flag wprint_entity(WINDOW * w , er_player * pl, uint32_t distx, uint32_t dis
 err_flag wprint_surroundings(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g ){
     /*
     */
+   g->printed_nodes[en->cur_node - g->adjacency_lists] = 1 ;
    for(uint32_t i = 0 ; i < en->cur_node->cur; i++){
         uint32_t index = en->cur_node->neighboors_ref[i] - g->adjacency_lists;
-        wmove(w, darp->elems[index].y*disty, darp->elems[index].x*distx);
-        waddch(w,i+ '0');
+        if(!en->cur_node->printed_links[i]){
+            en->cur_node->printed_links[i] = 1 ;
+            for(uint32_t k = 0 ; k < en->cur_node->neighboors_ref[i]->cur ; k++){
+                if(en->cur_node->neighboors_ref[i]->neighboors_ref[k] == en->cur_node){
+                    en->cur_node->neighboors_ref[i]->printed_links[k] = 1;
+                }
+            }
+            
+            err_flag failure = wprint_link(w, &darp->elems[ en->cur_node - g->adjacency_lists], &darp->elems[index],distx, disty );
+            def_err_handler(failure,"wprint_surroundings",failure);
+        }
+        wmove(w, darp->elems[index].y*disty, darp->elems[index].x*distx);     
+        waddch(w,i+ '0');      
    }
+
    wrefresh(w);
    return ERR_OK;
 }

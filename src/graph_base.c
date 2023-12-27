@@ -2,7 +2,7 @@
 #include "errflags.h"
 #include "dynarr.h"
 
-#define calloc_gentry(alist, nb_neigh) (alist)->neighboors_ref = calloc( (nb_neigh),sizeof(er_adjlist*) ); (alist)->max = (nb_neigh); (alist)->cur = 0;
+#define calloc_gentry(alist, nb_neigh) (alist)->neighboors_ref = calloc( (nb_neigh),sizeof(er_adjlist*) ); (alist)->printed_links = calloc( (nb_neigh),sizeof(bool) ); (alist)->max = (nb_neigh); (alist)->cur = 0;
 
 /**functions to initialize the adjacency lists **/
 static err_flag init_adjlist(er_adjlist * alist, size_t max){
@@ -15,6 +15,7 @@ static err_flag init_adjlist(er_adjlist * alist, size_t max){
     calloc_gentry(alist, max);
     def_err_handler(!alist->neighboors_ref, "init_gentry", ERR_REALLOC);
 
+
     return ERR_OK;
 }//tested ; seems ok
 
@@ -26,10 +27,16 @@ static err_flag realloc_adjlist(er_adjlist * alist, double coeff){
 
     //actual realloc 
    err_flag failure = generic_realloc((void**)&alist->neighboors_ref, sizeof(er_adjlist * ), (uint32_t)( (double)(alist->max+1) * coeff));
-   def_err_handler(failure, "realloc_adjlist", failure);
+   def_err_handler(failure, "realloc_adjlist->neighboors", failure);
+    //set to 0 cuz I don't like habing unitialized stuff lying around
+
+   failure = generic_realloc((void**)&alist->printed_links, sizeof(bool ), (uint32_t)( (double)(alist->max+1) * coeff));
+   def_err_handler(failure, "realloc_adjlist->printed_links", failure);
+
     //set to 0 cuz I don't like habing unitialized stuff lying around
    alist->max = (uint32_t)( (double)(alist->max+1) * coeff) ;
    memset(&alist->neighboors_ref[alist->cur+1], 0, (alist->max - alist->cur - 1 )* sizeof(er_adjlist*));
+   memset(&alist->printed_links[alist->cur+1], 0, (alist->max - alist->cur - 1 )* sizeof(bool));
 
    return ERR_OK;
 }//tested
@@ -47,7 +54,10 @@ err_flag append_adjlist(er_adjlist * alist, er_adjlist * neighboor_ref){
         err_flag failure = realloc_adjlist(alist, default_realloc);
         def_err_handler(failure, "append_adjlist", ERR_NULL);
     }
-    alist->neighboors_ref[alist->cur++] = neighboor_ref;
+    alist->neighboors_ref[alist->cur] = neighboor_ref;
+    alist->printed_links[alist->cur] = 0;
+
+    alist->cur++;
 
     return ERR_OK;
 }//tested ; seems ok
@@ -71,7 +81,10 @@ err_flag del_adjlist(er_adjlist * alist, const er_adjlist * neighboor_ref){
     for(uint32_t i = 0 ; i < alist->cur ; i ++){
         if(neighboor_ref == alist->neighboors_ref[i]){
             alist->neighboors_ref[i] = alist->neighboors_ref[alist->cur-1];
+            alist->printed_links[i] = alist->printed_links[alist->cur-1];
             alist->neighboors_ref[alist->cur-1] = NULL;
+            alist->printed_links[alist->cur -1 ] = 0;
+
             alist->cur--;
             return ERR_OK;
         }
@@ -87,6 +100,9 @@ static err_flag free_adjlist( er_adjlist * alist){
     if(alist){
         if(alist->neighboors_ref){
             free(alist->neighboors_ref);
+        }
+        if(alist->printed_links){
+            free(alist->printed_links);
         }
         alist->neighboors_ref = NULL ; 
         alist->cur = 0 ; 
@@ -128,7 +144,11 @@ err_flag init_graph(er_graph * graph, size_t nb_nodes){
     def_war_handler(!nb_nodes, "init_graph", ERR_VALS);
 
     graph->adjacency_lists = calloc(nb_nodes, sizeof(er_adjlist));
-    def_err_handler(!graph->adjacency_lists, "init_graph", ERR_ALLOC);
+    def_err_handler(!graph->adjacency_lists, "init_graph adj_lists", ERR_ALLOC);
+
+    graph->printed_nodes = calloc(nb_nodes, sizeof(bool));
+    def_err_handler(!graph->printed_nodes, "init_graph printed_nodes", ERR_ALLOC);
+
 
     graph->nb_nodes = nb_nodes;
 
@@ -153,6 +173,7 @@ err_flag append_graph(er_graph * graph , uint32_t index, const er_adjlist * entr
 
     graph->adjacency_lists[index].cur = entry->cur ;
     graph->adjacency_lists[index].neighboors_ref = entry->neighboors_ref ;
+    graph->printed_nodes[index] = 0 ;
 
     return ERR_OK;
 }//tested seems ok 
@@ -169,8 +190,12 @@ err_flag free_graph(er_graph * graph){
             }
             free(graph->adjacency_lists);
         }
+        if(graph->printed_nodes){
+            free(graph->printed_nodes);
+        }
         graph->adjacency_lists = NULL;
         graph->nb_nodes = 0; 
+        graph->printed_nodes = NULL ;
     }
     return ERR_OK;
 }//tested seems ok 

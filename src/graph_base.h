@@ -21,17 +21,20 @@ typedef struct s_graph_entry{
     uint32_t max ;
 
     struct s_graph_entry ** neighboors_ref ; //list of references to other entries
+    bool * printed_links ;
     
 }er_adjlist ;
-#define declare_adjlist(__alist) er_adjlist __alist; (__alist).nb_neighboors = 0 ; (__alist).max_neighboors = 0; (__alist).neighboors_ref = NULL;
+#define declare_adjlist(__alist) er_adjlist __alist; (__alist).nb_neighboors = 0 ; (__alist).max_neighboors = 0; (__alist).neighboors_ref = NULL; (__alist).printed_links = NULL;
 
 typedef struct s_graph{ 
 
     size_t nb_nodes ; 
+
     er_adjlist * adjacency_lists ; 
+    bool * printed_nodes ; 
 
 }er_graph; 
-#define declare_graph(__graph) er_graph __graph; (__graph).nb_nodes = 0 ; (__graph).adjacency_lists = NULL;
+#define declare_graph(__graph) er_graph __graph; (__graph).nb_nodes = 0 ; (__graph).adjacency_lists = NULL; (__graph).printed_nodes = NULL;
 
 //not storing node labels bc u just do substractions ;O
 

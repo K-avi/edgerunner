@@ -94,13 +94,19 @@ int main( int argc , char ** argv){
 
     declare_graph(g);
     declare_dynnar(dynarr_points, darp);
-    er_player p;
-    p.ch = '@';
-    p.cur_node = NULL; 
-    p.x = 0 ; 
-    p.y = 0 ;
-    //declare_er_player(p,0,0);
-    
+  
+    declare_er_player(p,0,0);
+    /*
+    er_points p0 = {0,0};
+
+    er_points p1; 
+    p1.x = 1; p1.y = 1 ; 
+
+    er_points p2 = {1,2};
+    wprint_link(stdscr,&p0,&p1, 4,4);
+    wprint_link(stdscr,&p1,&p2, 4,4);
+    wgetch(stdscr);
+    */
     start_game(stdscr,&g,&darp, &p);
     endwin();
 

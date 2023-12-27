@@ -7,7 +7,6 @@
 #include "dynarr.h"
 
 err_flag wprintw_graph(WINDOW * w, dynarr_points * darp, uint32_t distx, uint32_t disty,  er_graph * g);
-
-err_flag wprint_link(WINDOW * w, er_points * p1, er_points * p2, uint32_t distx, uint32_t disty);
+err_flag wprint_link(WINDOW * w, const er_points * p1, const er_points * p2, uint32_t distx, uint32_t disty);
 
 #endif
