@@ -18,6 +18,7 @@ and has some basic defines
 #include <unistd.h>
 #include <stdint.h>
 #include <string.h>
+#include "errflags.h"
 
 //stdbool is not really usefull for the game so macros 
 typedef uint8_t  bool ;

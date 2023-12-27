@@ -95,14 +95,15 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
                 nb_pts_won = nb_pts_won > 0 ? nb_pts_won - 1 : 0 ;
 
                 move_player(w,g,darp,p,ch-'0'); 
-                move_random(w, &en , g, darp,  &e);
+                //move_random(w, &en , g, darp,  &e);
+                move_closest(w,&en,g,darp,p);
                 wprint_surroundings(w,p,darp,def_distx,def_disty,g);      
                 wprint_player(w,p,def_distx, def_disty);  
                 wprint_exit(w,&e,def_distx,def_disty);
                 wprint_ennemy(w,&en,def_distx,def_disty);
 
                 if(p->cur_node == en.cur_node){
-                    fprintf(stderr,"reached\n");
+                    
                     mvwprintw(w,0,0,"you died\n");
                     wrefresh(w);
                     wgetch(w);

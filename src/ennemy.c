@@ -1,5 +1,6 @@
 #include "ennemy.h"
 #include "game.h"
+#include "search_utils.h"
 
 err_flag move_random(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_points * darp, er_exit * ex){
     /*
@@ -35,6 +36,37 @@ err_flag move_closest(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_points 
     /* 
     uses a BFS to find the closest way to approach the player
     */
+    def_err_handler(!en,"move_closest", ERR_NULL);
+    def_err_handler(!en->cur_node,"move_closest", ERR_NULL);
+    
+    if(!en->cur_node->cur){
+        return ERR_OK;
+    }
+
+    struct s_graph_entry * min_node = NULL ; 
+    int64_t min_dist = INT64_MAX  ;
+
+    for(uint32_t i = 0 ; i < en->cur_node->cur ; i++){
+        int64_t tmp_dist = - 1 ;
+        bfs_graph(g, en->cur_node->neighboors_ref[i],p->cur_node,&tmp_dist);
+        if(tmp_dist != -1 && tmp_dist < min_dist){
+            min_dist = tmp_dist ; 
+            min_node = en->cur_node->neighboors_ref[i] ;
+        }
+    }
+    def_err_handler(!min_node, "move_closest", ERR_NULL);
+    
+    if(g->printed_nodes[en->cur_node - g->adjacency_lists]){
+        mvwprintw(w,en->y * def_disty, en->x * def_distx, "O");
+    }else{
+        mvwprintw(w,en->y * def_disty, en->x * def_distx, " ");
+    }
+
+    en->cur_node = min_node ; 
+   // fprintf(stderr,"minnode %p\n", min_node);
+    en->x = darp->elems[min_node - g->adjacency_lists].x;
+    en->y = darp->elems[min_node - g->adjacency_lists].y;
+  
     return ERR_OK;
 }
 

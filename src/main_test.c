@@ -9,6 +9,8 @@
 #include <ncurses.h>
 #include "game.h"
 
+#include "search_utils.h"
+
 int main( int argc , char ** argv){
 
     time_t t;
@@ -88,6 +90,7 @@ int main( int argc , char ** argv){
     free_dynp(&d);
     free_graph(&g);*/
 
+    
     initscr();
     noecho();
     curs_set(0);
@@ -96,19 +99,36 @@ int main( int argc , char ** argv){
     declare_dynnar(dynarr_points, darp);
   
     declare_er_player(p,0,0);
-    /*
-    er_points p0 = {0,0};
-
-    er_points p1; 
-    p1.x = 1; p1.y = 1 ; 
-
-    er_points p2 = {1,2};
-    wprint_link(stdscr,&p0,&p1, 4,4);
-    wprint_link(stdscr,&p1,&p2, 4,4);
-    wgetch(stdscr);
-    */
+   
     start_game(stdscr,&g,&darp, &p);
     endwin();
+    
+    
+    /*
+    declare_deque(dq);
 
+    init_deque(&dq,1);
+
+    for(uint32_t i = 0 ; i < 15; i++){
+        add_back_deque(&dq,i);
+    }
+
+    for(uint32_t i = 0 ; i < 15 ; i++){
+        int64_t elem = -1 ;
+        pop_back_deque(&dq, &elem);
+        printf("elem=%li\n", elem);
+    }
+    free_deque(&dq);
+    */
+/*
+    declare_graph(g);
+    generate_lattice(&g,  6 );
+    int64_t dist = -1;
+    bfs_graph(&g, &g.adjacency_lists[0], &g.adjacency_lists[2],&dist);
+    
+    printf("dist=%li\n",dist);
+    
+    free_graph(&g);
+*/
     return 0 ; 
 }
