@@ -95,3 +95,36 @@ err_flag wprint_surroundings(WINDOW *w ,er_entity * en , dynarr_points * darp, u
    wrefresh(w);
    return ERR_OK;
 }
+
+err_flag wprint_surroundings_fancy(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g ){
+    /*
+    */
+   g->printed_nodes[en->cur_node - g->adjacency_lists] = 1 ;
+   for(uint32_t i = 0 ; i < en->cur_node->cur; i++){
+        uint32_t index = en->cur_node->neighboors_ref[i] - g->adjacency_lists;
+        if(!en->cur_node->printed_links[i]){
+            en->cur_node->printed_links[i] = 1 ;
+            for(uint32_t k = 0 ; k < en->cur_node->neighboors_ref[i]->cur ; k++){
+                if(en->cur_node->neighboors_ref[i]->neighboors_ref[k] == en->cur_node){
+                    en->cur_node->neighboors_ref[i]->printed_links[k] = 1;
+                }
+            }
+            
+            err_flag failure = wprint_link_fancy(w, &darp->elems[ en->cur_node - g->adjacency_lists], &darp->elems[index],distx, disty );
+            def_err_handler(failure,"wprint_surroundings",failure);
+        }
+        wmove(w, darp->elems[index].y*disty+1, darp->elems[index].x*distx+1);     
+        waddch(w,i+ '0');      
+   }
+
+   wrefresh(w);
+   return ERR_OK;
+}
+
+err_flag wprint_entity_fancy(WINDOW * w , er_player * pl, uint32_t distx, uint32_t disty){
+    
+    wmove(w,pl->y*disty+1, pl->x*distx+1);
+    waddch(w,pl->ch);
+    wrefresh(w);
+    return ERR_OK;
+}

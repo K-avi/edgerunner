@@ -18,8 +18,17 @@ int main(int argc , char ** argv){
         return 0 ;
     }
 
-    err_flag failure = start_game();
-    def_err_handler(failure, "main", failure);
-    
+    initscr();
+    noecho();
+    curs_set(0);
+
+    declare_graph(g);
+    declare_dynnar(dynarr_points, darp);
+  
+    declare_er_player(p,0,0);
+   
+    start_game(stdscr,&g,&darp, &p);
+    endwin();
+   
     return 0;
 }

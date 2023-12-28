@@ -25,4 +25,5 @@ extern err_flag start_game(WINDOW * w, er_graph * g, dynarr_points * darp,er_pla
 
 extern uint32_t def_distx ;
 extern uint32_t def_disty ;
+extern bool fancy_mode; 
 #endif

@@ -217,9 +217,85 @@ err_flag wprint_link(WINDOW * w, const er_points * p1, const er_points * p2, uin
   
     wrefresh(w);
     return ERR_OK;
-}//tested; DOES NOT work; safe (checks for args)
+}//tested; works; safe (checks for args)
 //writing clever code is for babies we stan big ass disjunctive forms in this house. 
 //I wanna handle (a^b) v (~a^b) v (a^~b) v etc ? splendid lemme write all of the cases then. 
 
 
-//wtf 
+err_flag wprint_node_fancy(WINDOW * w, const er_points * p1, uint32_t distx, uint32_t disty){
+    wmove(w,p1->y*disty ,p1->x*distx+1);
+    wprintw(w,"__");
+    mvwprintw(w, p1->y*disty + 1, p1->x*distx, "/  \\");
+    mvwprintw(w, p1->y*disty + 2, p1->x*distx, "\\__/");
+    return ERR_OK;
+}
+
+
+err_flag wprint_link_fancy(WINDOW * w, const er_points * p1, const er_points * p2, uint32_t distx, uint32_t disty){
+
+    wprint_node_fancy(w,p1,distx,disty);
+    wprint_node_fancy(w,p2,distx,disty);
+
+    er_points tmp_p1 = {p1->x *distx, p1->y *disty};
+    er_points tmp_p2 = {p2->x *distx, p2->y *disty};
+
+    if(p1->x == p2->x){
+        
+        if(p1->y > p2->y){
+           
+            wmove(w,tmp_p2.y+3,tmp_p2.x);
+            wvline(w,'#', tmp_p1.y - tmp_p2.y - 2);
+        }else if (p1->y < p2->y){
+           
+            wmove(w,tmp_p1.y+3, tmp_p1.x);
+            wvline(w,'#', tmp_p2.y - tmp_p1.y - 2);
+        }
+
+    }else if(p1->x < p2->x){
+
+        if(p1->y > p2->y){
+
+            tmp_p2.y += 3 ; 
+            tmp_p1.x += 3 ; 
+            draw_diag_dr(w, '#', tmp_p1,tmp_p2);
+        }else if(p1->y < p2->y){
+
+            tmp_p1.y += 3 ; 
+            tmp_p1.x += 3 ; 
+            //tmp_p2.x += 3 ;
+            draw_diag_ur(w, '#', tmp_p1,tmp_p2);
+        }else{// if(p1->y == p2->y)
+
+
+            tmp_p1.y += 1 ; 
+            tmp_p1.x += 4 ; 
+            wmove(w, tmp_p1.y, tmp_p1.x);
+            whline(w,'#', tmp_p2.x - tmp_p1.x );
+        }
+
+    }else if(p1->x > p2->x ){
+        if(p1->y > p2->y){
+           
+            tmp_p2.y +=3 ;
+            tmp_p2.x += 3 ; 
+            draw_diag_ur(w, '#', tmp_p2,tmp_p1);
+        }else if(p1->y < p2->y){
+
+        
+            tmp_p2.x += 3 ; 
+            tmp_p1.y +=3 ;
+            
+            draw_diag_dr(w, '#', tmp_p2, tmp_p1);
+        }else{// if(p1->y == p2->y)
+
+            tmp_p2.y += 1 ; 
+            tmp_p2.x += 4 ;
+            wmove(w, tmp_p2.y, tmp_p2.x);
+            whline(w, '#', tmp_p1.x - tmp_p2.x);
+        }
+    }
+  
+    wrefresh(w);
+
+    return ERR_OK;
+}

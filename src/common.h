@@ -19,9 +19,9 @@ and has some basic defines
 #include <stdint.h>
 #include <string.h>
 #include "errflags.h"
-
+#include <stdbool.h>
 //stdbool is not really usefull for the game so macros 
-typedef uint8_t  bool ;
+
 
 #define TRUE 1 
 #define FALSE 0 

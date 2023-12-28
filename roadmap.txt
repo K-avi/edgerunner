@@ -1,22 +1,20 @@
 version alpha : ---------------------------
 
-graph generation : 
--> make sure the graph is connex every time 
-
 "graphics" :
--> ascii art for nodes / links (very important)
 -> create a menu in a window 
 
 
-ennemy : 1
--> basic AI (bfs)
-    -> implement a dequeue
-    -> implement the bfs
-
-game : 
-->change graph generation depending on the level 
+game mechanics : 
 ->add an ennemy after a certain level
+->make the ennemy smarter after a certain level 
 
+graph generation : 
+-> make sure the graph is connex every time (not a bug but a featur atm)
+
+bugs : 
+-> sometime the game will crash with a floating point exception I have 0 idea why. 
+It's rare. I guess it has smtg to do with the graph generation section.
+->sometimes you won't be able to move idk why
 
 misc : 
 ->code documentation 
@@ -41,22 +39,3 @@ AI vs AI screensaver mode
 
 ffs stop passing distx and disty to every function and fucking multiply it directly
 
-at some point I'll change the graphics to smtg like this 
-in order to look less like rogue :O
-
-
-
-    __     __ 
-   /% \   /! \ 
-   \__/   \__/  
-    #     ##
-    #   ##
-   #  ##
-  #__#      __   
-  /@ \#####/0 \       
-  \__/     \__/  
-   #  #
-  #__  ##
-  /1 \    ##__  
-  \__/     /2 \  
-           \__/  

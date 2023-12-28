@@ -129,6 +129,40 @@ int main( int argc , char ** argv){
     printf("dist=%li\n",dist);
     
     free_graph(&g);
-*/
+*/  
+/*
+    initscr();
+    er_points p1 = {0,0};
+    er_points p2 = {1,0}; 
+    er_points p3 = {0,1}; 
+    er_points p4 = {1,1};
+    er_points p5 = {0,2}; 
+    er_points p6 = {2,0};
+    er_points p7 = {1,2}; 
+    er_points p8 = {2,1};
+    er_points p9 = {2,2}; 
+
+
+    wprint_link_fancy(stdscr,&p1,&p4,6,6);
+    wprint_link_fancy(stdscr,&p2,&p4,6,6); 
+    wprint_link_fancy(stdscr,&p3,&p4,6,6);
+    wprint_link_fancy(stdscr,&p5,&p4,6,6);
+
+    wprint_link_fancy(stdscr,&p6,&p4,6,6);
+
+    wprint_link_fancy(stdscr,&p7,&p4,6,6);
+    wprint_link_fancy(stdscr,&p8,&p4,6,6);
+    wprint_link_fancy(stdscr,&p9,&p4,6,6);
+
+    */
+
+    //wmove(stdscr,1,1);
+    //getch();
+    //wprintw(stdscr,"0");
+    //wvline(stdscr,'#',5);
+    //wrefresh(stdscr);
+    //getch();
+    endwin();
+
     return 0 ; 
 }

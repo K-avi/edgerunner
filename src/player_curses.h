@@ -33,5 +33,11 @@ extern err_flag wprint_entity(WINDOW * w , er_player * pl, uint32_t distx, uint3
 #define wprint_exit wprint_entity
 #define wprint_ennemy wprint_entity
 
+err_flag wprint_surroundings_fancy(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g );
+
+err_flag wprint_entity_fancy(WINDOW * w , er_player * pl, uint32_t distx, uint32_t disty);
+#define wprint_player_fancy wprint_entity_fancy
+#define wprint_exit_fancy wprint_entity_fancy
+#define wprint_ennemy_fancy wprint_entity_fancy
 
 #endif

@@ -57,9 +57,17 @@ err_flag move_closest(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_points 
     def_err_handler(!min_node, "move_closest", ERR_NULL);
     
     if(g->printed_nodes[en->cur_node - g->adjacency_lists]){
-        mvwprintw(w,en->y * def_disty, en->x * def_distx, "O");
+        if(!fancy_mode){
+            mvwprintw(w,en->y * def_disty, en->x * def_distx, "O");
+        }else{
+             mvwprintw(w,en->y * def_disty+1, en->x * def_distx+1, "O");
+        }
     }else{
-        mvwprintw(w,en->y * def_disty, en->x * def_distx, " ");
+        if(!fancy_mode){
+            mvwprintw(w,en->y * def_disty, en->x * def_distx, " ");
+        }else{
+             mvwprintw(w,en->y * def_disty+1, en->x * def_distx+1, " ");
+        }
     }
 
     en->cur_node = min_node ; 

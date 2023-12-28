@@ -3,8 +3,9 @@
 #include "ennemy.h"
 #include "graph_curses.h"
 
-uint32_t def_distx = 18; 
-uint32_t def_disty = 5;
+uint32_t def_distx = 8; 
+uint32_t def_disty = 8;
+bool fancy_mode = 1; 
 
 static err_flag reset_elements(er_graph * g, dynarr_points * darp, er_player * p){
 
@@ -21,23 +22,37 @@ static err_flag move_player(WINDOW * w, const er_graph * g , dynarr_points * dar
 
    
     if(index >= p->cur_node->cur){
-        fprintf(stderr,"index greater than nb nodes");
         return ERR_OK;
     }
 
     for(uint32_t i = 0 ; i < p->cur_node->cur ; i++){
         uint32_t cur_index = p->cur_node->neighboors_ref[i] - g->adjacency_lists;
-        wmove(w, darp->elems[cur_index].y*def_disty, darp->elems[cur_index].x*def_distx);
-        waddch(w,'O');
+        if(!fancy_mode){
+            wmove(w, darp->elems[cur_index].y*def_disty, darp->elems[cur_index].x*def_distx);
+            waddch(w,'O');
+        }else{
+            wmove(w, darp->elems[cur_index].y*def_disty +1, darp->elems[cur_index].x*def_distx+1);
+            waddch(w,'O');
+        }
     }
 
     uint32_t cur_index = p->cur_node - g->adjacency_lists;
-    wmove(w,darp->elems[cur_index].y*def_disty, darp->elems[cur_index].x*def_distx);
-    waddch(w,'O');
+    if(!fancy_mode){
+        wmove(w,darp->elems[cur_index].y*def_disty, darp->elems[cur_index].x*def_distx);
+        waddch(w,'O');
+    }else{
+        wmove(w,darp->elems[cur_index].y*def_disty+1, darp->elems[cur_index].x*def_distx+1);
+        waddch(w,'O');
+    }
 
     cur_index = p->cur_node->neighboors_ref[index] - g->adjacency_lists;
-    wmove(w,darp->elems[cur_index].y*def_disty, darp->elems[cur_index].x*def_distx);
-    waddch(w,p->ch);
+    if(!fancy_mode){
+        wmove(w,darp->elems[cur_index].y*def_disty, darp->elems[cur_index].x*def_distx);
+        waddch(w,p->ch);
+    }else{
+        wmove(w,darp->elems[cur_index].y*def_disty+1, darp->elems[cur_index].x*def_distx+1);
+        waddch(w,p->ch);
+    }
 
     p->y = darp->elems[cur_index].y;
     p->x = darp->elems[cur_index].x;
@@ -80,11 +95,17 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
 
         init_ent_pos(&e,p,&en,g,darp);
 
-       
-        wprint_surroundings(w,p,darp,def_distx,def_disty,g);
-        wprint_player(w,p,def_distx, def_disty);
-        wprint_exit(w,&e,def_distx,def_disty);
-        wprint_ennemy(w,&en,def_distx,def_disty);
+        if(!fancy_mode){
+            wprint_surroundings(w,p,darp,def_distx,def_disty,g);
+            wprint_player(w,p,def_distx, def_disty);
+            wprint_exit(w,&e,def_distx,def_disty);
+            wprint_ennemy(w,&en,def_distx,def_disty);
+        }else{
+            wprint_surroundings_fancy(w,p,darp,def_distx,def_disty,g);
+            wprint_player_fancy(w,p,def_distx, def_disty);
+            wprint_exit_fancy(w,&e,def_distx,def_disty);
+            wprint_ennemy_fancy(w,&en,def_distx,def_disty);
+        }
    
 
         while(p->cur_node != e.cur_node && ch!='q'){
@@ -97,10 +118,17 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
                 move_player(w,g,darp,p,ch-'0'); 
                 //move_random(w, &en , g, darp,  &e);
                 move_closest(w,&en,g,darp,p);
-                wprint_surroundings(w,p,darp,def_distx,def_disty,g);      
-                wprint_player(w,p,def_distx, def_disty);  
-                wprint_exit(w,&e,def_distx,def_disty);
-                wprint_ennemy(w,&en,def_distx,def_disty);
+                if(!fancy_mode){
+                    wprint_surroundings(w,p,darp,def_distx,def_disty,g);
+                    wprint_player(w,p,def_distx, def_disty);
+                    wprint_exit(w,&e,def_distx,def_disty);
+                    wprint_ennemy(w,&en,def_distx,def_disty);
+                }else{
+                    wprint_surroundings_fancy(w,p,darp,def_distx,def_disty,g);
+                    wprint_player_fancy(w,p,def_distx, def_disty);
+                    wprint_exit_fancy(w,&e,def_distx,def_disty);
+                    wprint_ennemy_fancy(w,&en,def_distx,def_disty);
+                }
 
                 if(p->cur_node == en.cur_node){
                     
