@@ -2,7 +2,7 @@
 #define ER_GCURSES_H 
 
 #include "common.h"
-#include <ncurses.h>
+#include <curses.h>
 #include "graph_base.h"
 #include "dynarr.h"
 

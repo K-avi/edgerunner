@@ -13,7 +13,7 @@ game.h defines the game related functions.
 
 #include "common.h"
 #include "errflags.h"
-#include <ncurses.h>
+#include <curses.h>
 #include "graph_base.h"
 #include "player_curses.h"
 #include "dynarr.h"

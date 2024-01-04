@@ -1,6 +1,6 @@
 #include "player_curses.h"
 #include "dynarr.h"
-#include "ncurses.h"
+#include "curses.h"
 #include "graph_curses.h"
 #include "ennemy.h"
 
@@ -61,7 +61,7 @@ static err_flag init_pos_entab(er_entab * entab,er_graph * g,  dynarr_points * d
     for(uint32_t i = 0 ; i < entab->cur ; i++){
         err_flag failure = init_ennemy_pos(&entab->ennemies[i],g,darp,player_index,exit_index);
         def_err_handler(failure, "init_pos_entab", failure);
-        fprintf(stderr, "i=%u entab.[i].curpos %p", i, entab->ennemies[i].cur_node);
+        //fprintf(stderr, "i=%u entab.[i].curpos %p", i, entab->ennemies[i].cur_node);
     }
     return ERR_OK;
 

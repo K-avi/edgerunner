@@ -4,7 +4,7 @@
 #include "common.h"
 #include "graph_base.h"
 #include "dynarr.h"
-#include <ncurses.h>
+#include <curses.h>
 
 //don't include player curses cuz it includes this
 typedef struct s_player er_ennemy; 
@@ -49,7 +49,6 @@ extern err_flag append_entab(er_entab * entab , er_ennemy * ennemy , er_enrules 
 extern err_flag update_entab(er_entab * entab, uint32_t * indexes_incr, double * coeffs_incr );
 extern err_flag free_entab(er_entab * en );
 
-extern err_flag move_ennemies(WINDOW * w, er_entab * entab, er_player * p, dynarr_points * darp, er_graph *g, bool * lost);
 
 err_flag init_enrules(er_enrules * dst, er_enrules * src);
 

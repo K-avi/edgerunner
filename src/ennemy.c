@@ -149,7 +149,6 @@ err_flag update_enrules(er_enrules * en , uint32_t index_incr, double coeff_incr
     
     for(uint32_t i = 0 ; i < en->size ; i++){
         if(i!=index_incr){   
-            printf("val d %d\n", val_decr);
             en->coeffs[i] = (uint16_t) max(0, ((int32_t)en->coeffs[i]) - val_decr) ;
         }
     }
@@ -227,28 +226,8 @@ err_flag update_entab(er_entab * entab, uint32_t * indexes_incr, double * coeffs
     return ERR_OK;
 }
 
-err_flag move_ennemies(WINDOW * w, er_entab * entab, er_player * p, dynarr_points * darp, er_graph *g, bool * lost){
 
-    for(uint32_t i = 0 ; i < entab->cur ; i++){
-        uint16_t coeff = rand()%UINT16_MAX;
 
-        rule_fun rfun = entab->rules[i].rule_functions[entab->rules[i].size-1];
-        for(uint32_t j = 0 ; j < entab->rules[i].size ; j++){
-            if(entab->rules[i].coeffs[j] >= coeff){
-                rfun = entab->rules[i].rule_functions[j];
-                break;
-            }
-        }
-
-        err_flag failure = rfun(w,&entab->ennemies[i],g,darp, p);
-        def_err_handler(failure, "move_ennemies", failure);
-
-        if(entab->ennemies[i].cur_node == p->cur_node){
-            *lost = 1 ;
-        }
-    }
-    return ERR_OK;
-}
 
 err_flag wprint_entab(WINDOW * w , er_entab * en, uint32_t distx, uint32_t disty){
     

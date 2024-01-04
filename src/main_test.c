@@ -6,7 +6,7 @@
 #include "graph_gen.h"
 #include "graph_curses.h"
 
-#include <ncurses.h>
+#include <curses.h>
 #include "game.h"
 #include "ennemy.h"
 

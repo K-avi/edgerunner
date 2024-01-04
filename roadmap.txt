@@ -3,15 +3,6 @@ version alpha : ---------------------------
 "graphics" :
 -> create a menu in a window 
 
-game mechanics : 
-->add an ennemy after a certain level 
-    -> implement an ennemy tab 
-        -> need to replace the ennemy by an ennemy tab in the game 
-           atm I need to add the checks 
-    -> ennemy deletion after he moved
-
-
-
 graph generation : 
 ->make sure the graph is connex every time (not a bug but a feature atm)
 
@@ -19,24 +10,22 @@ bugs :
 -> sometime the game will crash with a floating point exception I have 0 idea why. 
 It's rare. I guess it has smtg to do with the graph generation section.
 ->sometimes you won't be able to move idk why
-->sometimes the ennemy does weird shit
 
 misc : 
 ->code documentation 
 ->code refactoring (merge some files)
+    -> code refactoring is VERY IMPORTANT 
 -> make the checks mean something ffs 
 
 version beta / 1.0 : -----------------------
 
 -> REPLACE FREEFUNCTIONS BY FLUSH FUNCTIONS !!!!! 
 
-
 "graphics" :
 -> colors (maybe 1.0 idk how it works in ncurses)
 
 ennemy : 
--> AI that isn't too dumb (ask fox, maybe 1.0)
-
+->  sillier AI that isn't too dumb (ask fox)
 game : 
 -> save scores somewhere
 -> add special nodes (teleport nodes)
@@ -44,7 +33,4 @@ game :
 misc : 
 AI vs AI screensaver mode
 2 player mode
-
-
-ffs stop passing distx and disty to every function and fucking multiply it directly
 

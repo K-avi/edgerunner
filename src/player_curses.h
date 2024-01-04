@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "graph_base.h"
-#include <ncurses.h>
+#include <curses.h>
 #include "dynarr.h"
 #include "ennemy.h"
 
