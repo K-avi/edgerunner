@@ -8,6 +8,7 @@
 
 #include <ncurses.h>
 #include "game.h"
+#include "ennemy.h"
 
 #include "search_utils.h"
 
@@ -90,18 +91,7 @@ int main( int argc , char ** argv){
     free_dynp(&d);
     free_graph(&g);*/
 
-    
-    initscr();
-    noecho();
-    curs_set(0);
 
-    declare_graph(g);
-    declare_dynnar(dynarr_points, darp);
-  
-    declare_er_player(p,0,0);
-   
-    start_game(stdscr,&g,&darp, &p);
-    endwin();
     
     
     /*
@@ -162,7 +152,45 @@ int main( int argc , char ** argv){
     //wvline(stdscr,'#',5);
     //wrefresh(stdscr);
     //getch();
-    endwin();
 
+    /*
+    initscr();
+    noecho();
+    curs_set(0);
+
+    declare_graph(g);
+    declare_dynnar(dynarr_points, darp);
+  
+    declare_er_player(p,0,0);
+   
+    start_game(stdscr,&g,&darp, &p);
+
+    endwin();
+    */
+    
+    declare_er_ennemy(e1,0,0);
+    
+
+    declare_entab(a);
+    init_entab(&a,1);
+    append_entab(&a, &e1, &default_enrules);
+    double t0[1] = {0.2};
+    uint32_t t1[1] = {1};
+    update_entab(&a, t1, t0);
+
+
+    append_entab(&a, &e1, &default_enrules);
+    printf("en0={%u %u %u}, en1={%u %u %u}\n", a.rules[0].coeffs[0], a.rules[0].coeffs[1], a.rules[0].coeffs[2],  a.rules[1].coeffs[0], a.rules[1].coeffs[1], a.rules[1].coeffs[2] );
+    free_entab(&a);
+    
+   /*
+    declare_enrules(enr); 
+    init_enrules(&enr , &default_enrules);
+        printf("enr.coeffs={%u,%u,%u}\n", enr.coeffs[0], enr.coeffs[1], enr.coeffs[2]);
+
+    update_enrules(&enr, 1,2);
+    printf("enr.coeffs={%u,%u,%u}\n", enr.coeffs[0], enr.coeffs[1], enr.coeffs[2]);
+    free_enrules(&enr);
+    */
     return 0 ; 
 }

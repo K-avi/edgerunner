@@ -23,6 +23,9 @@ and has some basic defines
 //stdbool is not really usefull for the game so macros 
 
 
+#define max(val1,val2) val1 > val2 ? val1 : val2 
+#define min(val1,val2) val2 > val1 ? val1 : val2 
+
 #define TRUE 1 
 #define FALSE 0 
 

@@ -7,10 +7,11 @@ uint32_t def_distx = 8;
 uint32_t def_disty = 8;
 bool fancy_mode = 1; 
 
-static err_flag reset_elements(er_graph * g, dynarr_points * darp, er_player * p){
+static err_flag reset_elements(er_graph * g, dynarr_points * darp, er_player * p, er_entab * entab){
 
     free_graph(g); 
     free_dynp(darp);
+    free_entab(entab);
     p->x = 0 ; 
     p->y = 0 ;
     p->cur_node = NULL ; 
@@ -32,7 +33,7 @@ static err_flag move_player(WINDOW * w, const er_graph * g , dynarr_points * dar
             waddch(w,'O');
         }else{
             wmove(w, darp->elems[cur_index].y*def_disty +1, darp->elems[cur_index].x*def_distx+1);
-            waddch(w,'O');
+            waddch(w,' ');
         }
     }
 
@@ -42,7 +43,7 @@ static err_flag move_player(WINDOW * w, const er_graph * g , dynarr_points * dar
         waddch(w,'O');
     }else{
         wmove(w,darp->elems[cur_index].y*def_disty+1, darp->elems[cur_index].x*def_distx+1);
-        waddch(w,'O');
+        waddch(w,' ');
     }
 
     cur_index = p->cur_node->neighboors_ref[index] - g->adjacency_lists;
@@ -83,6 +84,7 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
 
     declare_er_exit(e,0,0);
     declare_er_ennemy(en,0,0);
+    declare_entab(entab);   
 
     do{
         
@@ -91,20 +93,25 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
         generate_lattice(g,row_size);
         randomize_lattice(g,row_size, 0.3,0.1,0.8,0.85);
         init_dynp(darp, default_arr_size);//shitty ; better flush it
+        init_entab(&entab, 2);
+        append_entab(&entab, &en, &default_enrules);
+
         gen_coordinates(row_size,row_size,darp);
 
-        init_ent_pos(&e,p,&en,g,darp);
-
+        init_ent_pos(&e,p,&entab,g,darp);
+    
         if(!fancy_mode){
             wprint_surroundings(w,p,darp,def_distx,def_disty,g);
             wprint_player(w,p,def_distx, def_disty);
             wprint_exit(w,&e,def_distx,def_disty);
-            wprint_ennemy(w,&en,def_distx,def_disty);
+            //wprint_ennemy(w,&en,def_distx,def_disty);
+            wprint_entab_fancy(w,&entab,def_distx,def_disty);
         }else{
             wprint_surroundings_fancy(w,p,darp,def_distx,def_disty,g);
             wprint_player_fancy(w,p,def_distx, def_disty);
             wprint_exit_fancy(w,&e,def_distx,def_disty);
-            wprint_ennemy_fancy(w,&en,def_distx,def_disty);
+            //wprint_ennemy_fancy(w,&en,def_distx,def_disty);
+            wprint_entab_fancy(w,&entab,def_distx,def_disty);
         }
    
 
@@ -113,36 +120,45 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
             ch = wgetch(w);
 
             if(ch >= '0' && ch <= '9' && ch != 'q'){
-                nb_pts_won = nb_pts_won > 0 ? nb_pts_won - 1 : 0 ;
+                if(ch-'0' < p->cur_node->cur){
+                    nb_pts_won = nb_pts_won > 0 ? nb_pts_won - 1 : 0 ;
 
-                move_player(w,g,darp,p,ch-'0'); 
-                //move_random(w, &en , g, darp,  &e);
-                move_closest(w,&en,g,darp,p);
-                if(!fancy_mode){
-                    wprint_surroundings(w,p,darp,def_distx,def_disty,g);
-                    wprint_player(w,p,def_distx, def_disty);
-                    wprint_exit(w,&e,def_distx,def_disty);
-                    wprint_ennemy(w,&en,def_distx,def_disty);
-                }else{
-                    wprint_surroundings_fancy(w,p,darp,def_distx,def_disty,g);
-                    wprint_player_fancy(w,p,def_distx, def_disty);
-                    wprint_exit_fancy(w,&e,def_distx,def_disty);
-                    wprint_ennemy_fancy(w,&en,def_distx,def_disty);
-                }
+                    move_player(w,g,darp,p,ch-'0'); 
+                    //move_random(w, &en , g, darp,  &e);
+                    //move_closest(w,&en,g,darp,p);
+                    bool lost = 0 ; 
+                    move_ennemies(w,&entab,p,darp,g,&lost);
 
-                if(p->cur_node == en.cur_node){
-                    
-                    mvwprintw(w,0,0,"you died\n");
-                    wrefresh(w);
-                    wgetch(w);
+                    if(!fancy_mode){
+                        wprint_surroundings(w,p,darp,def_distx,def_disty,g);
+                        wprint_player(w,p,def_distx, def_disty);
+                        wprint_exit(w,&e,def_distx,def_disty);
+                        //wprint_ennemy(w,&en,def_distx,def_disty);
+                        wprint_entab(w,&entab,def_distx,def_disty);
+                    }else{
+                        wprint_surroundings_fancy(w,p,darp,def_distx,def_disty,g);
+                        wprint_player_fancy(w,p,def_distx, def_disty);
+                        wprint_exit_fancy(w,&e,def_distx,def_disty);
+                        //wprint_ennemy_fancy(w,&en,def_distx,def_disty);
+                        wprint_entab_fancy(w,&entab,def_distx,def_disty);
+                    }
 
-                    ch = 'q';
-                    break;  
-                }               
+                    if(lost){
+                        
+                        mvwprintw(w,0,0,"you died\n");
+                        wrefresh(w);
+                        wgetch(w);
+
+                        ch = 'q';
+                        break;  
+                    }    
+                }           
             }
         }
+
+       
         nb_points += nb_pts_won;
-        reset_elements(g, darp, p);
+        reset_elements(g, darp, p, &entab);
         clear();
         
     }while(ch != 'q');

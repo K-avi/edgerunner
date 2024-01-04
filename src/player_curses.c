@@ -2,6 +2,7 @@
 #include "dynarr.h"
 #include "ncurses.h"
 #include "graph_curses.h"
+#include "ennemy.h"
 
 static err_flag init_player_pos(er_player * pl , er_graph * g,  dynarr_points * darp, uint32_t * player_index){
     /*
@@ -36,7 +37,7 @@ static err_flag init_exit_pos(er_exit * ex , er_graph * g,  dynarr_points * darp
    return ERR_OK;
 }
 
-static err_flag init_en_pos(er_ennemy * en , er_graph * g,  dynarr_points * darp, uint32_t player_index, uint32_t exit_index){
+err_flag init_ennemy_pos(er_ennemy * en , er_graph * g,  dynarr_points * darp, uint32_t player_index, uint32_t exit_index){
     /*
     darp -> not null & init 
     pl -> not null & init
@@ -54,12 +55,24 @@ static err_flag init_en_pos(er_ennemy * en , er_graph * g,  dynarr_points * darp
    return ERR_OK;
 }
 
-err_flag init_ent_pos(er_exit * ex, er_player* pl, er_ennemy * en, er_graph * g,  dynarr_points * darp){
+
+static err_flag init_pos_entab(er_entab * entab,er_graph * g,  dynarr_points * darp, uint32_t player_index, uint32_t exit_index){
+
+    for(uint32_t i = 0 ; i < entab->cur ; i++){
+        err_flag failure = init_ennemy_pos(&entab->ennemies[i],g,darp,player_index,exit_index);
+        def_err_handler(failure, "init_pos_entab", failure);
+        fprintf(stderr, "i=%u entab.[i].curpos %p", i, entab->ennemies[i].cur_node);
+    }
+    return ERR_OK;
+
+}
+
+err_flag init_ent_pos(er_exit * ex, er_player* pl, er_entab * entab, er_graph * g,  dynarr_points * darp){
     
     uint32_t pl_i, ex_i;
     init_player_pos(pl,g,darp,&pl_i);
     init_exit_pos(ex,g,darp,pl_i, &ex_i);
-    init_en_pos(en,g,darp,pl_i, ex_i);
+    init_pos_entab(entab,g,darp,pl_i, ex_i);
     return ERR_OK;
 }
 

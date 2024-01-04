@@ -2,7 +2,7 @@
 #include "errflags.h"
 #include "game.h"
 
-
+#include <time.h>
 
 
 void print_help(void){
@@ -13,10 +13,10 @@ int main(int argc , char ** argv){
     
     //parse options 
 
-    if(!argc){
-        print_help(); 
-        return 0 ;
-    }
+
+    time_t t;
+    time(&t);
+    srand(t);
 
     initscr();
     noecho();

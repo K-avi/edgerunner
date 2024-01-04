@@ -1,3 +1,5 @@
 .vscode 
 .clang*
 test
+edgerunner 
+dump*
