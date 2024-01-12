@@ -12,7 +12,7 @@ graph_base.h defines basic graph structure and it's API
 */
 
 #include "common.h"
-#include "errflags.h"
+#include "misc.h"
 
 //should be dynamic array at least for generation 
 typedef struct s_graph_entry{
@@ -43,13 +43,27 @@ extern err_flag init_graph(er_graph * graph, size_t nb_nodes);
 extern err_flag append_graph(er_graph * graph , uint32_t index, const er_adjlist * entry); 
 extern err_flag fprint_graph(FILE * flux, er_graph * graph); 
 extern err_flag free_graph(er_graph * graph);
-
+extern err_flag copy_graph(er_graph * gsource, er_graph * gdest);
 //more advanced manipulation functions
 extern err_flag app_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
 //extern err_flag app_node_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
 extern err_flag del_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
 extern err_flag del_node_graph(er_graph * graph , uint32_t node); 
 
+/**GRAPh GENERATION**/
+
+#define DEFAULT_ROW_SIZE 5
+extern uint32_t row_size ;
+
+extern err_flag generate_lattice(er_graph * graph, uint32_t n );
+extern err_flag randomize_lattice(er_graph * lattice, uint32_t n , double  pdl, double pdn, double pail, double pajk);
+//lattice : pointer to a lattice graph, Probability Delete Link : proba to delete any link,
+// Probability Delete Node : -//- delete any node Probability Add I,L : let (i,j,k,l) be (n,n+1, 2n,2n+1) 
+/*
+nodes of the lattice pail is the probability to add the link {i,l} in the lattice. 
+similarly, pajk is the probability to add {j,k}. You can't add BOTH i,l and j,k since 
+it would make the graph non planar.
+*/
 
 
 #endif 

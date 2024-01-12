@@ -1,5 +1,5 @@
-#include "player_curses.h"
-#include "dynarr.h"
+#include "entities.h"
+#include "misc.h"
 #include "curses.h"
 #include "graph_curses.h"
 #include "ennemy.h"
@@ -9,7 +9,6 @@ static err_flag init_player_pos(er_player * pl , er_graph * g,  dynarr_points * 
     darp -> not null & init 
     pl -> not null & init
     */
-
    uint32_t pl_index = rand()%darp->cur ;
 
     pl->x = darp->elems[pl_index].x;
@@ -24,11 +23,10 @@ static err_flag init_exit_pos(er_exit * ex , er_graph * g,  dynarr_points * darp
     darp -> not null & init 
     pl -> not null & init
     */
-
-   uint32_t ex_index = rand()%darp->cur ;
-   while(ex_index == player_index){
-    ex_index = rand()%darp->cur;
-   }
+    uint32_t ex_index = rand()%darp->cur ;
+    while(ex_index == player_index){
+        ex_index = rand()%darp->cur;
+    }
 
     ex->x = darp->elems[ex_index].x;
     ex->y = darp->elems[ex_index].y;
@@ -42,11 +40,10 @@ err_flag init_ennemy_pos(er_ennemy * en , er_graph * g,  dynarr_points * darp, u
     darp -> not null & init 
     pl -> not null & init
     */
-
-   uint32_t en_index = rand()%darp->cur ;
-   while(en_index == player_index || en_index == exit_index){
-    en_index = rand()%darp->cur;
-   }
+    uint32_t en_index = rand()%darp->cur ;
+    while(en_index == player_index || en_index == exit_index){
+        en_index = rand()%darp->cur;
+    }
 
     en->x = darp->elems[en_index].x;
     en->y = darp->elems[en_index].y;
@@ -61,14 +58,12 @@ static err_flag init_pos_entab(er_entab * entab,er_graph * g,  dynarr_points * d
     for(uint32_t i = 0 ; i < entab->cur ; i++){
         err_flag failure = init_ennemy_pos(&entab->ennemies[i],g,darp,player_index,exit_index);
         def_err_handler(failure, "init_pos_entab", failure);
-        //fprintf(stderr, "i=%u entab.[i].curpos %p", i, entab->ennemies[i].cur_node);
     }
     return ERR_OK;
 
 }
 
 err_flag init_ent_pos(er_exit * ex, er_player* pl, er_entab * entab, er_graph * g,  dynarr_points * darp){
-    
     uint32_t pl_i, ex_i;
     init_player_pos(pl,g,darp,&pl_i);
     init_exit_pos(ex,g,darp,pl_i, &ex_i);

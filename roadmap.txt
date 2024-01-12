@@ -1,10 +1,19 @@
-version alpha : ---------------------------
-
-"graphics" :
--> create a menu in a window 
+version beta : ---------------------------
 
 graph generation : 
 ->make sure the graph is connex every time (not a bug but a feature atm)
+    -> implement dfs to make spanning tree then postfix run of spanning tree, this way I know the 
+       leaves of the tree and I know I can safely delete links / nodes from them
+        -> this works for nodes 
+        -> for links do a thing where you save the links deleted by the bfs to keep 
+            in track which one to keep or not 
+
+main :
+-> enable option to change parameters (modify globals w options)
+-> from the game settings maybe idk
+
+"graphics" :
+-> create a menu in a window 
 
 bugs : 
 -> sometime the game will crash with a floating point exception I have 0 idea why. 
@@ -12,7 +21,7 @@ It's rare. I guess it has smtg to do with the graph generation section.
 ->sometimes you won't be able to move idk why
 
 misc : 
-->code documentation 
+->code documentation (kinda)
 ->code refactoring (merge some files)
     -> code refactoring is VERY IMPORTANT 
 -> make the checks mean something ffs 

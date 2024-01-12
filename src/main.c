@@ -1,6 +1,7 @@
 #include "common.h"
-#include "errflags.h"
+#include "misc.h"
 #include "game.h"
+#include "points.h"
 
 #include <time.h>
 

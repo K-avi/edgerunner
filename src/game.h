@@ -12,11 +12,11 @@ game.h defines the game related functions.
 */
 
 #include "common.h"
-#include "errflags.h"
+#include "misc.h"
 #include <curses.h>
 #include "graph_base.h"
-#include "player_curses.h"
-#include "dynarr.h"
+#include "entities.h"
+#include "misc.h"
 /*
 call once in the main fn
 */

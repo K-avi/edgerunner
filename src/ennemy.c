@@ -37,7 +37,7 @@ err_flag move_random(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_points *
     }
 
     en->x = darp->elems[ en->cur_node->neighboors_ref[index] - g->adjacency_lists].x;
-    en->y = darp->elems[ en->cur_node->neighboors_ref[index] - g->adjacency_lists].y;  
+    en->y = darp->elems[ en->cur_node->neighboors_ref[index] - g->adjacency_lists].y;
     en->cur_node = en->cur_node->neighboors_ref[index];
 
     return ERR_OK;
@@ -71,7 +71,7 @@ err_flag move_closest(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_points 
         if(!fancy_mode){
             mvwprintw(w,en->y * def_disty, en->x * def_distx, "O");
         }else{
-             mvwprintw(w,en->y * def_disty+1, en->x * def_distx+1, " ");
+            mvwprintw(w,en->y * def_disty+1, en->x * def_distx+1, " ");
         }
     }else{
         if(!fancy_mode){
@@ -142,6 +142,10 @@ err_flag free_enrules(er_enrules * en ){
 
 err_flag update_enrules(er_enrules * en , uint32_t index_incr, double coeff_incr){
     
+    def_err_handler(!en,"update_enrules", ERR_NULL);
+    def_err_handler(!en->coeffs,"update_enrules coeffs", ERR_NULL);
+
+
     uint32_t val_incr = min(UINT16_MAX , coeff_incr * en->coeffs[index_incr]);
     int32_t val_decr = val_incr/(en->size-1);
 
@@ -184,8 +188,12 @@ static inline err_flag realloc_entab(er_entab * entab , double coeff){
     return ERR_OK;
 }
 
-err_flag append_entab(er_entab * entab , er_ennemy * ennemy , er_enrules * rules ){
+err_flag append_entab(er_entab * entab , const er_ennemy * ennemy , er_enrules * rules ){
     
+    def_err_handler(!entab, "append_entab entab", ERR_NULL);
+    def_err_handler(!ennemy, "append_entab ennemy", ERR_NULL);
+    def_err_handler(!rules, "append_entab rules", ERR_NULL);
+
     if(entab->cur == entab->max){
         err_flag failure = realloc_entab(entab, default_realloc);
         def_err_handler(failure, "append_entab", failure);
@@ -199,7 +207,6 @@ err_flag append_entab(er_entab * entab , er_ennemy * ennemy , er_enrules * rules
     memcpy( &entab->ennemies[cur], ennemy, sizeof(er_ennemy));
 
     entab->cur++;
-
     return ERR_OK;
 }
 
@@ -217,7 +224,8 @@ err_flag free_entab(er_entab * en ){
     return ERR_OK;
 }
 
-err_flag update_entab(er_entab * entab, uint32_t * indexes_incr, double * coeffs_incr ){
+err_flag update_entab(er_entab * entab, const uint32_t * indexes_incr, const double * coeffs_incr ){
+    def_err_handler(!entab, "update_entab", ERR_NULL);
 
     for(uint32_t i = 0 ; i < entab->cur ; i++){
         err_flag failure = update_enrules(&entab->rules[i], indexes_incr[i], coeffs_incr[i]);
@@ -225,9 +233,6 @@ err_flag update_entab(er_entab * entab, uint32_t * indexes_incr, double * coeffs
     }
     return ERR_OK;
 }
-
-
-
 
 err_flag wprint_entab(WINDOW * w , er_entab * en, uint32_t distx, uint32_t disty){
     

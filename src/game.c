@@ -1,5 +1,4 @@
 #include "game.h"
-#include "graph_gen.h"
 #include "ennemy.h"
 #include "graph_curses.h"
 

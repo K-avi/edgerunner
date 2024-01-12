@@ -1,9 +1,8 @@
 #include "common.h"
-#include "dynarr.h"
+#include "misc.h"
 #include "points.h"
 #include <time.h>
 #include "graph_base.h"
-#include "graph_gen.h"
 #include "graph_curses.h"
 
 #include <curses.h>
@@ -167,7 +166,7 @@ int main( int argc , char ** argv){
 
     endwin();
     */
-    
+    /*
     declare_er_ennemy(e1,0,0);
     
 
@@ -182,6 +181,7 @@ int main( int argc , char ** argv){
     append_entab(&a, &e1, &default_enrules);
     printf("en0={%u %u %u}, en1={%u %u %u}\n", a.rules[0].coeffs[0], a.rules[0].coeffs[1], a.rules[0].coeffs[2],  a.rules[1].coeffs[0], a.rules[1].coeffs[1], a.rules[1].coeffs[2] );
     free_entab(&a);
+    */
     
    /*
     declare_enrules(enr); 
@@ -192,5 +192,28 @@ int main( int argc , char ** argv){
     printf("enr.coeffs={%u,%u,%u}\n", enr.coeffs[0], enr.coeffs[1], enr.coeffs[2]);
     free_enrules(&enr);
     */
+
+    declare_graph(g); 
+    declare_graph(tree); 
+    declare_dynarr(dynarr_links, darn);
+    init_dynl(&darn, 5);
+    
+    generate_lattice(&g, 4);
+    randomize_lattice(&g, 4, 0, 0, 0.5, 0.8);
+    generate_spanning_tree(&g, &tree, &darn );
+
+
+    declare_dynarr(dynarr_points, darp);
+    init_dynp(&darp, default_arr_size);
+    gen_coordinates(4,4,&darp);
+    fprint_graph(stdout, &tree);
+        initscr();
+    //wprintw_graph(stdscr, &darp, def_distx, def_disty, &tree);
+    getch();
+    free_dynp(&darp);
+    free_graph(&g); 
+    free_graph(&tree);
+    endwin();
+
     return 0 ; 
 }
