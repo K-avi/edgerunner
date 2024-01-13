@@ -259,7 +259,7 @@ printf("\n\n\n");
     initscr();
     wprintw_graph(stdscr, &darp, def_distx, def_disty, &gdest);
     getch();
-     endwin();
+    endwin();
 
     free_graph(&gsource); 
     free_graph(&gdest);

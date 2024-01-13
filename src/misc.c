@@ -147,11 +147,15 @@ err_flag init_dynarr_nodes( er_dynarr_nodes * arrn, uint32_t size){
 
 static err_flag realloc_dynarr_nodes( er_dynarr_nodes * arrn , double coeff){
   
+  def_err_handler(!arrn, "realloc_dynar_nodes", ERR_NULL);
+    def_err_handler(!arrn->elems, "realloc_dynar_nodes elems", ERR_NULL);
+  
+
   err_flag failure = generic_realloc((void**)&arrn->elems, sizeof(struct s_graph_entry * ), (uint32_t)( (double)(arrn->max+1) * coeff));
   def_err_handler(failure, "realloc_arrn", failure);
 
    arrn->max = (uint32_t)( (double)(arrn->max+1) * coeff) ;
-   memset(&arrn->elems[arrn->cur+1], 0, (arrn->max - arrn->cur )* sizeof(struct s_graph_entry *));
+   memset(&arrn->elems[arrn->cur+1], 0, (arrn->max - arrn->cur -1 )* sizeof(struct s_graph_entry *));
   //set to 0 cuz I don't like habing unitialized stuff lying around
 
   return ERR_OK;

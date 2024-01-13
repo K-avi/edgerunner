@@ -26,7 +26,7 @@ misc :
 ->code documentation (kinda)
 ->code refactoring (merge some files)
     -> code refactoring is VERY IMPORTANT 
--> make the checks mean something ffs 
+    -> delete all the unused stuff 
 
 version beta / 1.0 : -----------------------
 
