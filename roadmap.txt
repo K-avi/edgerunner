@@ -8,6 +8,8 @@ graph generation :
         -> for links do a thing where you save the links deleted by the bfs to keep 
             in track which one to keep or not 
 
+-> put it in the game 
+
 main :
 -> enable option to change parameters (modify globals w options)
 -> from the game settings maybe idk

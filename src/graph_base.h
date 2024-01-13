@@ -65,5 +65,7 @@ similarly, pajk is the probability to add {j,k}. You can't add BOTH i,l and j,k 
 it would make the graph non planar.
 */
 
+err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t n, double pail, double pajk, double pdn, double pal);
+
 
 #endif 

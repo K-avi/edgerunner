@@ -91,7 +91,7 @@ static err_flag realloc_dynarr(er_dynaru32 * dynarr , double coeff){
   def_err_handler(failure, "realloc_dynarr", failure);
 
    dynarr->max = (uint32_t)( (double)(dynarr->max+1) * coeff) ;
-   memset(&dynarr->elems[dynarr->cur+1], 0, (dynarr->max - dynarr->cur )* sizeof(uint32_t));
+   memset(&dynarr->elems[dynarr->cur+1], 0, (dynarr->max - dynarr->cur - 1  )* sizeof(uint32_t));
   //set to 0 cuz I don't like habing unitialized stuff lying around
 
   return ERR_OK;

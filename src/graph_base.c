@@ -396,16 +396,20 @@ err_flag randomize_lattice(er_graph * lattice, uint32_t n, double pdl, double pd
 }//tested ; seems ok 
 
 
-static err_flag copy_adjlist(er_adjlist * asource, er_adjlist * adest){
+static err_flag copy_adjlist(er_adjlist * asource, er_adjlist * adest, struct s_graph_entry * first_ref_source, struct s_graph_entry * first_ref_dest){
 
     def_err_handler(!asource , "copy_adjlist asource", ERR_NULL);
     def_err_handler(!adest , "copy_adjlist adest", ERR_NULL);
 
     err_flag failure = init_adjlist(adest, asource->max);
     def_err_handler(failure, "copy_adjlist", failure);
-   
-    memcpy(adest->neighboors_ref, asource->neighboors_ref, asource->max * sizeof(struct s_graph_entry * ));
-    memset(adest->printed_links, 0, asource->max * sizeof(bool));
+    
+    for(uint32_t i = 0 ; i < asource->cur ; i++){
+        adest->neighboors_ref[i] = (asource->neighboors_ref[i] -first_ref_source) + first_ref_dest;
+    }
+
+    adest->cur = asource->cur ; 
+    adest->max = asource->max;
     //bc I don't want this info 
 
     return ERR_OK;
@@ -415,13 +419,17 @@ err_flag copy_graph(er_graph * gsource, er_graph * gdest){
     def_err_handler(!gsource , "copy_adjlist asource", ERR_NULL);
     def_err_handler(!gdest , "copy_adjlist adest", ERR_NULL);
 
-    err_flag failure = init_graph(gdest, gsource->nb_nodes);
-    def_err_handler(failure, "copy_graph", failure);
+    gdest->adjacency_lists = calloc( gsource->nb_nodes, sizeof(er_adjlist));
+    def_err_handler(!gdest->adjacency_lists, "copy_graph adj_lists", ERR_ALLOC);
+
+    gdest->printed_nodes = calloc(gsource->nb_nodes, sizeof(bool));
+    def_err_handler(!gdest->printed_nodes, "copy_graph printed_nodes", ERR_ALLOC);
+
+    gdest->nb_nodes = gsource->nb_nodes ;
 
     for(uint32_t i = 0 ; i < gsource->nb_nodes ; i++){
-        failure = copy_adjlist(&gsource->adjacency_lists[i], &gdest->adjacency_lists[i]);
+        err_flag failure = copy_adjlist(&gsource->adjacency_lists[i], &gdest->adjacency_lists[i], gsource->adjacency_lists, gdest->adjacency_lists);
         def_err_handler(failure, "copy_graph", failure);
-
     }
     memset(gdest->printed_nodes, 0, gsource->nb_nodes * sizeof(bool));
 
@@ -429,7 +437,7 @@ err_flag copy_graph(er_graph * gsource, er_graph * gdest){
 }
 
 
-err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest , double pail, double pajk, double pdn, double pal){
+err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t n, double pail, double pajk, double pdn, double pal){
     /*
         gsource -> not null & initialized 
         gdest -> not null 
@@ -446,17 +454,58 @@ err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest , double 
         it's really convoluted
     */
 
+    bool * added = calloc(gsource->nb_nodes , sizeof(bool) );
+    for(uint32_t i = 0 ; i < gsource->nb_nodes - n   ; i++ ){
+      
+        if((double)rand()/(double)RAND_MAX < pail ){
+            if( i%n != n-1 ){
+                err_flag failure = app_link_graph(gsource, i, i+n+1);
+                def_err_handler(failure, "randomize_lattice app1", failure);
+                added[i] = TRUE;  
+            }
+
+        }if((double)rand()/(double)RAND_MAX < pajk ){
+            if(i%n != 0 ){
+                if(!added[i-1]){
+                   err_flag failure = app_link_graph(gsource, i, i+n-1);
+                   def_err_handler(failure, "randomize_lattice app2", failure);
+                }
+            }
+        }
+    }
+    free(added);
+
     declare_dynarr(dynarr_links, removed_links );
     init_dynl(&removed_links, gsource->nb_nodes *2);
     
     err_flag failure = generate_spanning_tree(gsource, gdest, &removed_links); 
     def_err_handler(failure,"", failure);
 
+    
+
+    uint32_t nb_delnodes = 0 ; 
+    for(uint32_t i = 0 ; i < gdest->nb_nodes ; i++){
+        if(((double)rand()/(double)RAND_MAX < pdn )){
+            nb_delnodes++;
+        }
+    }
+    
     declare_darn(darn);
     init_dynarr_nodes(&darn, (gsource->nb_nodes / 2)+1 );
     deletable_nodes(gdest, &darn);
 
-    free_dynl(&removed_links);
+    nb_delnodes = nb_delnodes > darn.cur ? darn.cur : nb_delnodes;
+    for(uint32_t i = 0 ; i < nb_delnodes ; i++){
+        del_node_graph(gdest, darn.elems[i] - gdest->adjacency_lists);
+    }
     free_dynarr_nodes(&darn);
+
+    for(uint32_t i = 0 ; i < removed_links.cur ; i++){
+        if((double)rand()/(double)RAND_MAX < pal ){
+            app_link_graph(gdest, removed_links.elems[i].x, removed_links.elems[i].y);
+        }
+    }
+    free_dynl(&removed_links);
+    
     return ERR_OK;
-}//not done 
+}//tested; ok  

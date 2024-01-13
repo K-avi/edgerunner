@@ -192,6 +192,8 @@ int main( int argc , char ** argv){
     printf("enr.coeffs={%u,%u,%u}\n", enr.coeffs[0], enr.coeffs[1], enr.coeffs[2]);
     free_enrules(&enr);
     */
+    /*
+    declare_dynarr(dynarr_points , darp);
 
     declare_graph(g); 
     declare_graph(tree); 
@@ -203,17 +205,65 @@ int main( int argc , char ** argv){
     generate_spanning_tree(&g, &tree, &darn );
 
 
-    declare_dynarr(dynarr_points, darp);
     init_dynp(&darp, default_arr_size);
     gen_coordinates(4,4,&darp);
-    fprint_graph(stdout, &tree);
-        initscr();
-    //wprintw_graph(stdscr, &darp, def_distx, def_disty, &tree);
+    //fprint_graph(stdout, &tree);
+    initscr();
+    wprintw_graph(stdscr, &darp, def_distx, def_disty, &tree);
     getch();
+    endwin();
+
     free_dynp(&darp);
     free_graph(&g); 
     free_graph(&tree);
-    endwin();
+    free_dynl(&darn);
+    */
+    
+   /*
+    declare_graph(g); 
+    declare_graph(gcopy); 
+    generate_lattice(&g, 4);
+
+    copy_graph(&g,&gcopy);
+
+    declare_dynarr(dynarr_points , darp);
+    init_dynp(&darp, default_arr_size);
+    gen_coordinates(4,4,&darp);
+    //initscr();
+    //wprintw_graph(stdscr, &darp, def_distx, def_disty, &gcopy);
+    // getch();
+     //endwin();
+
+
+        fprint_graph(stdout, &g);
+printf("\n\n\n");
+    fprint_graph(stdout, &gcopy);
+
+    free_graph(&g); 
+    free_graph(&gcopy); 
+    free_dynp(&darp);
+    */
+
+    declare_graph(gsource); 
+    declare_graph(gdest); 
+
+    declare_dynarr(dynarr_points, darp);
+    init_dynp(&darp, default_arr_size);
+    gen_coordinates(4,4,&darp);
+
+
+    generate_lattice(&gsource, 4);
+
+    safe_randomize_lattice(&gsource, &gdest, 4, 0.6, 0.8, 0.01, 0.6);
+    
+    initscr();
+    wprintw_graph(stdscr, &darp, def_distx, def_disty, &gdest);
+    getch();
+     endwin();
+
+    free_graph(&gsource); 
+    free_graph(&gdest);
+    free_dynp(&darp);
 
     return 0 ; 
 }
