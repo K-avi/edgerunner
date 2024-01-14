@@ -117,8 +117,8 @@ err_flag wprint_node_fancy(WINDOW * w, const er_points * p1, uint32_t distx, uin
 
 err_flag wprint_link_fancy(WINDOW * w, const er_points * p1, const er_points * p2, uint32_t distx, uint32_t disty, int c1, int c2){
     
-    wprint_node_fancy(w,p1,distx,disty, c1);
-    wprint_node_fancy(w,p2,distx,disty, c2);
+    //wprint_node_fancy(w,p1,distx,disty, c1);
+    //wprint_node_fancy(w,p2,distx,disty, c2);
 
     if(colors_on){
         attron(COLOR_PAIR(COLOR_LINK));
@@ -189,51 +189,49 @@ err_flag wprint_link_fancy(WINDOW * w, const er_points * p1, const er_points * p
 }
 
 err_flag update_gprint_fancy(WINDOW * w,  er_graph * g, dynarr_points * darp, er_game_entities * gent){
+  
+    if(colors_on){
+        for(uint32_t i = 0 ; i < gent->ennemies->cur ; i++){
+            uint32_t index_ennemy = gent->ennemies->ennemies[i].cur_node - g->adjacency_lists;
+            g->col_cur[index_ennemy] = gent->ennemies->ennemies[i].color ; 
+        }
 
+        uint32_t index_exit = gent->ex->cur_node - g->adjacency_lists;
+        g->col_cur[index_exit] = gent->ex->color;
 
-    
-
-    for(uint32_t i = 0 ; i < gent->ennemies->cur ; i++){
-        uint32_t index_ennemy = gent->ennemies->ennemies[i].cur_node - g->adjacency_lists;
-        g->col_cur[index_ennemy] = gent->ennemies->ennemies[i].color ; 
+        uint32_t index_player = gent->p->cur_node - g->adjacency_lists ; 
+        g->col_cur[index_player] = gent->p->color;
     }
+    
+    wprint_entab_fancy(w ,gent->ennemies, def_distx, def_disty);
+    wprint_entity_fancy(w,gent->ex, def_distx, def_disty);
+    wupdate_links_fancy(w, gent->p, darp, def_distx, def_disty,g, gent);
 
-    uint32_t index_exit = gent->ex->cur_node - g->adjacency_lists;
-    g->col_cur[index_exit] = gent->ex->color;
-
-    uint32_t index_player = gent->p->cur_node - g->adjacency_lists ; 
-    g->col_cur[index_player] = gent->p->color;
-    wprint_surroundings_fancy(w, gent->p, darp, def_distx, def_disty,g, gent);
-
-    for(uint32_t i = 0 ; i < g->nb_nodes ; i++ ){
-        if(g->printed_nodes[i] && g->visited[i]){
-         
-            wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, g->col_cur[i]);
-            g->col_cur[i] = COLOR_NODE;
-        }else if(g->printed_nodes[i]){
-            wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, g->col_cur[i]);
-            g->col_cur[i] = COLOR_NODE_NEW;
-        
-        }else{
-            g->col_cur[i] = COLOR_NODE_NEW;
+    if(colors_on){
+        for(uint32_t i = 0 ; i < g->nb_nodes ; i++ ){
+            if(g->printed_nodes[i] && g->visited[i]){
+            
+                wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, g->col_cur[i]);
+                g->col_cur[i] = COLOR_NODE;
+            }else if(g->printed_nodes[i]){
+                wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, g->col_cur[i]);
+                g->col_cur[i] = COLOR_NODE_NEW;
+            
+            }else{
+                g->col_cur[i] = COLOR_NODE_NEW;
+            }
         }
     }
-   
-    wprint_entab_fancy(w ,gent->ennemies, def_distx, def_disty);
     wprint_entity_fancy(w,gent->p, def_distx, def_disty); 
-    wprint_entity_fancy(w,gent->ex, def_distx, def_disty); 
-
     
-    fprintf(stderr, "-----\n" );
+    er_player * en = gent->p;
+    for(uint32_t i = 0 ; i < en->cur_node->cur; i++){
 
-    for(uint32_t i = 0 ; i < gent->p->cur_node->cur; i++){
-        fprintf(stderr, "%p\n", (void*)gent->p->cur_node->neighboors_ref[i]);
-        uint32_t index = gent->p->cur_node->neighboors_ref[i] - g->adjacency_lists;
+        uint32_t index = en->cur_node->neighboors_ref[i] - g->adjacency_lists;
         wmove(w, darp->elems[index].y*def_disty+1, darp->elems[index].x*def_distx+1);     
-        waddch(w,i + '0');     
+        waddch(w,i+ '0');      
     }
     wrefresh(w);
-
    
     return ERR_OK;
 }

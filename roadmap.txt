@@ -1,7 +1,6 @@
 version alpha : ---------------------------
 
 
-
 misc : 
 -> delete useless code 
     -> make misc.c / misc.h , points.c,h search_utils.c,h less messy 

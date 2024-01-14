@@ -61,13 +61,7 @@ extern err_flag wprint_entity(WINDOW * w , er_entity * pl, uint32_t distx, uint3
 #define wprint_exit wprint_entity
 #define wprint_ennemy wprint_entity
 
-extern err_flag wprint_surroundings_fancy(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g, const er_game_entities * gent );
-/*
-    w -> not null 
-    (en & darp & g ) -> not null & initialized
 
-    a fancier print function to print the nodes of g surrounding en in w
-*/
 extern err_flag wprint_entity_fancy(WINDOW * w , er_player * pl, uint32_t distx, uint32_t disty);
 /*
     w -> not null
@@ -78,5 +72,13 @@ extern err_flag wprint_entity_fancy(WINDOW * w , er_player * pl, uint32_t distx,
 #define wprint_player_fancy wprint_entity_fancy
 #define wprint_exit_fancy wprint_entity_fancy
 #define wprint_ennemy_fancy wprint_entity_fancy
+
+extern err_flag wupdate_links_fancy(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g, const er_game_entities * gent );
+/*
+    w -> not null 
+    (en & darp & g ) -> not null & initialized
+
+    a fancier print function to update the links to print and set the visited / to print nodes 
+*/
 
 #endif

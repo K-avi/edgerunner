@@ -113,7 +113,7 @@ int main(int argc , char ** argv){
         init_pair(6, -1, -1);
 
     }
-
+    
 
     time_t t;
     time(&t);
