@@ -160,16 +160,15 @@ err_flag init_graph(er_graph * graph, size_t nb_nodes){
     def_err_handler(!graph->printed_nodes, "init_graph printed_nodes", ERR_ALLOC);
 
     if(colors_on){
-        graph->col_prev = calloc(nb_nodes, sizeof(uint8_t));
-        def_err_handler(!graph->col_prev, "init_graph col_prev", ERR_ALLOC);
+        graph->visited = calloc(nb_nodes, sizeof(uint8_t));
+        def_err_handler(!graph->visited, "init_graph col_prev", ERR_ALLOC);
 
         graph->col_cur = calloc(nb_nodes, sizeof(uint8_t));
         def_err_handler(!graph->col_cur, "init_graph col_cur", ERR_ALLOC);
 
-        memset(graph->col_prev, 255, sizeof(uint8_t) * graph->nb_nodes);
-        memset(graph->col_cur , COLOR_NODE, sizeof(uint8_t) * graph->nb_nodes);
+        memset(graph->col_cur , COLOR_NODE_NEW, sizeof(uint8_t) * graph->nb_nodes);
     }else{
-        graph->col_prev = graph->col_cur = NULL ;
+        graph->visited = graph->col_cur = NULL ;
     }
 
     graph->nb_nodes = nb_nodes;
@@ -199,10 +198,10 @@ err_flag free_graph(er_graph * graph){
         if(graph->col_cur){
             free(graph->col_cur);
         }
-        if(graph->col_prev){
-            free(graph->col_prev);
+        if(graph->visited){
+            free(graph->visited);
         }
-        graph->col_cur = graph->col_prev = NULL;
+        graph->col_cur = graph->visited = NULL;
         graph->adjacency_lists = NULL;
         graph->nb_nodes = 0; 
         graph->printed_nodes = NULL ;
@@ -372,16 +371,15 @@ err_flag copy_graph(er_graph * gsource, er_graph * gdest){
     def_err_handler(!gdest->printed_nodes, "copy_graph printed_nodes", ERR_ALLOC);
 
     if(colors_on){
-        gdest->col_prev = calloc(gsource->nb_nodes, sizeof(uint8_t));
-        def_err_handler(!gdest->col_prev, "init_graph col_prev", ERR_ALLOC);
+        gdest->visited = calloc(gsource->nb_nodes, sizeof(uint8_t));
+        def_err_handler(!gdest->visited, "init_graph col_prev", ERR_ALLOC);
 
         gdest->col_cur = calloc(gsource->nb_nodes, sizeof(uint8_t));
         def_err_handler(!gdest->col_cur, "init_graph col_cur", ERR_ALLOC);
 
-        memset(gdest->col_prev, 255, sizeof(uint8_t) * gsource->nb_nodes);
-        memset(gdest->col_cur , COLOR_NODE, sizeof(uint8_t) * gsource->nb_nodes);
+        memset(gdest->col_cur , COLOR_NODE_NEW, sizeof(uint8_t) * gsource->nb_nodes);
     }else{
-        gdest->col_prev = gdest->col_cur = NULL ; 
+        gdest->visited = gdest->col_cur = NULL ; 
     }
 
     gdest->nb_nodes = gsource->nb_nodes ;

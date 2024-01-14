@@ -110,6 +110,7 @@ int main(int argc , char ** argv){
         init_pair(3, COLOR_BLUE, -1);
         init_pair(4, COLOR_YELLOW, -1);
         init_pair(5, COLOR_MAGENTA, -1);
+        init_pair(6, -1, -1);
 
     }
 

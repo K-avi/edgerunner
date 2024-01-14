@@ -33,7 +33,7 @@ typedef struct s_graph{
     er_adjlist * adjacency_lists ; 
     bool * printed_nodes ; 
 
-    uint8_t * col_prev ; 
+    uint8_t * visited ; 
     uint8_t * col_cur ; 
 
 }er_graph; 

@@ -1,4 +1,4 @@
-version beta : ---------------------------
+version alpha : ---------------------------
 
 
 
@@ -11,11 +11,9 @@ misc :
 
 main :
 -> enable option to change parameters (modify globals w options)
+    -> some of them are but not all atm 
 -> from the game settings maybe idk
 
-"graphics" :
--> create a menu in a window 
--> give attributes to exit and ennemy nodes (smtg like bold / blink )
 
 
 misc : 
@@ -28,8 +26,9 @@ version beta / 1.0 : -----------------------
 
 -> REPLACE FREEFUNCTIONS BY FLUSH FUNCTIONS !!!!! 
 
-"graphics" :
--> colors (maybe 1.0 idk how it works in ncurses)
+
+-> create a menu in a window 
+
 
 ennemy : 
 ->  sillier AI that isn't too dumb (ask fox)

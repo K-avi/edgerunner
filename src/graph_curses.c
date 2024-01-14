@@ -206,13 +206,16 @@ err_flag update_gprint_fancy(WINDOW * w,  er_graph * g, dynarr_points * darp, er
     wprint_surroundings_fancy(w, gent->p, darp, def_distx, def_disty,g, gent);
 
     for(uint32_t i = 0 ; i < g->nb_nodes ; i++ ){
-        if(g->printed_nodes[i]){
-            if(1){
-                wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, g->col_cur[i]);
-
-                g->col_prev[i] = g->col_cur[i] ; 
-                g->col_cur[i] = COLOR_NODE;
-            }
+        if(g->printed_nodes[i] && g->visited[i]){
+         
+            wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, g->col_cur[i]);
+            g->col_cur[i] = COLOR_NODE;
+        }else if(g->printed_nodes[i]){
+            wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, g->col_cur[i]);
+            g->col_cur[i] = COLOR_NODE_NEW;
+        
+        }else{
+            g->col_cur[i] = COLOR_NODE_NEW;
         }
     }
    

@@ -35,6 +35,7 @@ extern bool colors_on ;
 #define COLOR_CURNODE 3
 #define COLOR_LINK 4
 #define COLOR_NODE 5
+#define COLOR_NODE_NEW 6
 
 #define debug
 

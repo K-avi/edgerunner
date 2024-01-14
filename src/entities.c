@@ -112,6 +112,7 @@ err_flag wprint_surroundings_fancy(WINDOW *w ,er_entity * en , dynarr_points * d
     */
    
    g->printed_nodes[en->cur_node - g->adjacency_lists] = 1 ;
+   g->visited[en->cur_node - g->adjacency_lists] = 1;
    for(uint32_t i = 0 ; i < en->cur_node->cur; i++){
         uint32_t index = en->cur_node->neighboors_ref[i] - g->adjacency_lists;
     
