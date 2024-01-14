@@ -14,7 +14,6 @@ static err_flag reset_elements(er_graph * g, dynarr_points * darp, er_player * p
     p->x = 0 ; 
     p->y = 0 ;
     p->cur_node = NULL ; 
-
     return ERR_OK;
 }
 
@@ -24,7 +23,6 @@ static err_flag move_player(WINDOW * w, const er_graph * g , dynarr_points * dar
     if(index >= p->cur_node->cur){
         return ERR_OK;
     }
-
     for(uint32_t i = 0 ; i < p->cur_node->cur ; i++){
         uint32_t cur_index = p->cur_node->neighboors_ref[i] - g->adjacency_lists;
         if(!fancy_mode){
@@ -35,7 +33,6 @@ static err_flag move_player(WINDOW * w, const er_graph * g , dynarr_points * dar
             waddch(w,' ');
         }
     }
-
     uint32_t cur_index = p->cur_node - g->adjacency_lists;
     if(!fancy_mode){
         wmove(w,darp->elems[cur_index].y*def_disty, darp->elems[cur_index].x*def_distx);
@@ -60,9 +57,9 @@ static err_flag move_player(WINDOW * w, const er_graph * g , dynarr_points * dar
 
     wrefresh(w);
     return ERR_OK;
-}
+}//works , unsafe (doesn't check args)
 
-err_flag move_ennemies(WINDOW * w, er_entab * entab, er_player * p, dynarr_points * darp, er_graph *g, bool * lost){
+static err_flag move_ennemies(WINDOW * w, er_entab * entab, er_player * p, dynarr_points * darp, er_graph *g, bool * lost){
 
     for(uint32_t i = 0 ; i < entab->cur ; i++){
         uint16_t coeff = rand()%UINT16_MAX;
@@ -90,28 +87,21 @@ err_flag move_ennemies(WINDOW * w, er_entab * entab, er_player * p, dynarr_point
         }
     }
     return ERR_OK;
-}
+}//works, unsafe (doesn't check args)
 
 //don't need all of these parameters, maybe just window tbh 
 err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp ){
-    /*
-    function to call to start the game. 
-
-    w -> not null 
-    g -> not null & initialized | not initialized
-    darp -> not null & initialized | not initialized
-    p -> not null
-    */
+ 
     def_err_handler(!w, "start_game w", ERR_NULL);
     def_err_handler(!g,"start_game g", ERR_NULL);
     def_err_handler(!darp, "start_game darp", ERR_NULL);
     def_err_handler(g->nb_nodes > darp->cur, "start_game", ERR_VALS);
 
-
     chtype ch = 0 ; 
     uint32_t nb_points = 0;
     uint32_t level = 0 ; 
 
+    //declares the entities 
     declare_er_player(p,0,0);
     declare_er_exit(e,0,0);
     declare_er_ennemy(en,0,0);
@@ -123,21 +113,20 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp ){
     gentities.ennemies = &entab ;
 
     do{
-        level++; 
-        uint32_t nb_pts_won = 20 ; 
+        level++; //increments level
+        uint32_t nb_pts_won = 20 ; //increments points
 
-        
-        generate_level(g);
-        
+        generate_level(g); //generates level
         init_dynp(darp, default_arr_size);//shitty ; better flush it
-        if(level <= 3){
+
+        if(level <= 4){ //adds a second ennemy after level 4
             uint32_t indexes_incr[] = {2}; 
             double coeffs_incr[1];
             init_entab(&entab, 2);
             append_entab(&entab, &en, &default_enrules);
             coeffs_incr[0] = min((double)level/(double)10, 1);
             update_entab(&entab, indexes_incr,coeffs_incr);
-        }else{
+        }else{ //updates the ennemy rules (makes them smarter :O)
             uint32_t indexes_incr[] = {2,2}; 
             double coeffs_incr[2];
             init_entab(&entab, 2);
@@ -147,22 +136,21 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp ){
             coeffs_incr[1] = min((double)level-3/(double)10, 1);
             update_entab(&entab, indexes_incr,coeffs_incr);
         }
-        gen_coordinates(row_size,row_size,darp);
 
-        init_ent_pos(&e,&p,&entab,g,darp);
+        gen_coordinates(row_size,row_size,darp); //generates coordinates of the nodes
+        init_ent_pos(&e,&p,&entab,g,darp); //initialized the ennemies 
     
-        if(!fancy_mode){
+        if(!fancy_mode){ //prints ugly stuff if ugly mode 
             wprint_surroundings(w,&p,darp,def_distx,def_disty,g);
             wprint_player(w,&p,def_distx, def_disty);
             wprint_exit(w,&e,def_distx,def_disty);
             wprint_entab(w,&entab,def_distx,def_disty);
-        }else{
+        }else{ //prints normal stuff otherwise
             update_gprint_fancy(w, g, darp, &gentities);
         }
-   
 
         while(p.cur_node != e.cur_node && ch!='q'){
-            
+        //iterates while player hasn't reached the exit, the ennemy are not on ur node and 'q' isn't typed
             ch = wgetch(w);
 
             if(ch >= '0' && ch <= '9' && ch != 'q'){
@@ -194,15 +182,14 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp ){
                 }           
             }
         }
-
-       
         nb_points += nb_pts_won;
         reset_elements(g, darp, &p, &entab);
-        clear();
-        
+        clear();   
     }while(ch != 'q');
+
     mvwprintw(w,0,0,"you scored %u points on level %u\n",nb_points, level);
     wrefresh(w);
     wgetch(w);
+
     return ERR_OK ;
 }

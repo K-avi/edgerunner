@@ -16,11 +16,11 @@ err_flag init_dynp(dynarr_points * darp , size_t max_size ){
 
    return ERR_OK;
 }//tested; ok
+
 static err_flag realloc_dynp(dynarr_points * darp){
     /*
     darp -> (!NULL) & (initialized | not initialized (doesn't throw warnings)
     */
-   
     def_err_handler(!darp,"realloc_dynp", ERR_NULL);
     
     if(!darp->elems){
@@ -29,20 +29,15 @@ static err_flag realloc_dynp(dynarr_points * darp){
 
         return ERR_OK;
     }
-
     darp->elems = realloc(darp->elems, ((darp->max  * default_realloc ) +1 )* sizeof(er_points));
     darp->max = (darp->max * default_realloc) + 1 ;
-
     def_err_handler(!darp->elems,"realloc_dynp", ERR_REALLOC);
 
     return ERR_OK;
-}//tested ; might be wrong 
+}//tested ;ok
 
 err_flag append_dynp(dynarr_points * darp, const er_points * point){
-    /*
-    darp -> not null & initialized | not initialized 
-    point -> not null 
-    */
+   
     def_err_handler(!darp, "append_dynp darp", ERR_NULL);
     def_err_handler(!point, "append_dynp point", ERR_NULL);
     warning_handler(!darp->elems,"append_dynp", ERR_NOTNULL, {err_flag failure = init_dynp(darp, default_arr_size ); def_err_handler(failure, "append_dynp", failure); });
@@ -57,7 +52,7 @@ err_flag append_dynp(dynarr_points * darp, const er_points * point){
     darp->cur ++; 
 
     return ERR_OK ;
-}//not tested 
+}//tested ok
 
 err_flag free_dynp(dynarr_points * darp){
     /*
@@ -86,39 +81,14 @@ err_flag fprint_dynp(FILE * flux, const dynarr_points * darp){
     if(!darp->elems){
         fprintf(flux, "null pointer in darp->elems\n");
     }
-
     for(uint32_t i = 0 ; i < darp->cur ; i++){
         fprintf(flux,"darp[%u]=%u,%u\n",i, darp->elems[i].x, darp->elems[i].y);
     }
-
     return ERR_OK;
 }//not tested
 
-
-err_flag gen_rand_points( uint32_t nbpoints, uint32_t max,  dynarr_points * darp){
-    /*
-    arr -> not null & initialized | not initialized (throws warning)
-    */
-    
-    def_err_handler(!darp,"gen_points", ERR_NULL);
-    warning_handler(!darp->elems, "gen_points", ERR_VALS, 
-    {err_flag failure = init_dynp(darp,default_arr_size);def_err_handler(failure,"gen_points", failure);});
-
-    for(uint32_t i = 0 ; i < nbpoints ; i ++){
-        er_points tmp = { rand()%max, rand()%max};
-
-        err_flag failure = append_dynp(darp, &tmp);
-        def_err_handler(failure, "gen_points", failure);        
-    }
-    return F_OK;
-}//tested ; ok 
-
 err_flag gen_coordinates(uint32_t n, uint32_t m , dynarr_points * darp){
-    /*
-    darp -> not null & initialized | not initialized
-
-    gen coordinates from (0,0) to (n,m) in lexicographical order
-    */
+ 
     def_err_handler(!darp,"gen_coord", ERR_NULL);
     warning_handler(!darp->elems, "gen_coord", ERR_VALS, 
     {err_flag failure = init_dynp(darp,default_arr_size);def_err_handler(failure,"gen_coord", failure);});
@@ -131,6 +101,6 @@ err_flag gen_coordinates(uint32_t n, uint32_t m , dynarr_points * darp){
         }
     }
     return ERR_OK;
-}
+}//ok
 
 

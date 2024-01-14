@@ -3,9 +3,27 @@
 #include "points.h"
 
 uint32_t default_deque_size = 16; 
+typedef struct s_deque{
 
-err_flag init_deque(er_deque * dq, uint32_t max){
-    /**/
+    struct s_graph_entry ** elems;
+    uint32_t max; 
+    uint32_t size ;
+    int64_t start; 
+
+}er_deque;
+#define declare_deque(__dq) er_deque __dq={NULL, 0,0,0} ;
+/*
+Deque implementation based on : 
+https://web.engr.oregonstate.edu/~sinisa/courses/OSU/CS261/lectures/Deque.pdf
+
+the explanation is great check it out :D 
+*/
+
+static err_flag init_deque(er_deque * dq, uint32_t max){
+    /*
+    dq -> not null 
+    inits a dq with max entries.
+    */
     def_err_handler(!dq,"init_deque", ERR_NULL);
     
     dq->elems = (struct s_graph_entry **) calloc(max, sizeof(struct s_graph_entry *));
@@ -16,11 +34,12 @@ err_flag init_deque(er_deque * dq, uint32_t max){
     dq->start = 0 ;
 
     return ERR_OK;
-}
+}//ok
 
 static inline err_flag realloc_deque(er_deque * dq, double coeff){
     /*
     dq -> not null 
+    reallocates dq; new max = old_max * coeff +1
     */
     def_err_handler(!dq,"realloc_deque", ERR_NULL);
 
@@ -29,11 +48,12 @@ static inline err_flag realloc_deque(er_deque * dq, double coeff){
     dq->max = (uint32_t) ((double) dq->max * coeff +1);
     def_err_handler(failure, "realloc_deque", failure);
     return ERR_OK;
-}
-
-err_flag add_back_deque(er_deque * dq, struct s_graph_entry * elem){
+}//ok
+#ifdef debug
+static err_flag add_back_deque(er_deque * dq, struct s_graph_entry * elem){
     /*
     dq -> not null & initialized
+    adds elem to the back of the deque, see wiki on deque for more info
     */
     def_err_handler(!dq,"realloc_deque dq", ERR_NULL);
     def_err_handler(!dq->elems,"realloc_deque dq->elems", ERR_NULL);
@@ -49,10 +69,13 @@ err_flag add_back_deque(er_deque * dq, struct s_graph_entry * elem){
     dq->size ++;
 
     return ERR_OK;
-}
-err_flag add_front_deque(er_deque * dq, struct s_graph_entry * elem){
+}//ok 
+#endif
+
+static err_flag add_front_deque(er_deque * dq, struct s_graph_entry * elem){
     /*
     dq -> not null & initialized
+    adds elem to the front of the deque, see wiki of deque for more info
     */
     def_err_handler(!dq,"realloc_deque dq", ERR_NULL);
     def_err_handler(!dq->elems,"realloc_deque dq->elems", ERR_NULL);
@@ -69,9 +92,9 @@ err_flag add_front_deque(er_deque * dq, struct s_graph_entry * elem){
     dq->size++;
 
     return ERR_OK;
-}
+}//ok
 
-err_flag free_deque(er_deque * dq){
+static err_flag free_deque(er_deque * dq){
     if(dq){
         if(dq->elems){
             free(dq->elems); 
@@ -82,10 +105,14 @@ err_flag free_deque(er_deque * dq){
         dq->elems = NULL ;
     }
     return ERR_OK;
-}
+}//ok
 
-err_flag pop_front_deque(er_deque * dq, struct s_graph_entry ** elem){
-
+#ifdef debug
+static err_flag pop_front_deque(er_deque * dq, struct s_graph_entry ** elem){
+    /*
+    dq -> not null 
+    elem -> not null
+    */
     def_err_handler(!dq,"pop_front_deque dq", ERR_NULL);
     def_err_handler(!elem,"pop_front_deque elem", ERR_NULL);
     warning_handler(dq->size == 0, "pop_front_deque",ERR_VALS, *elem = NULL ; return ERR_OK;);
@@ -95,10 +122,12 @@ err_flag pop_front_deque(er_deque * dq, struct s_graph_entry ** elem){
 
 	dq->size--;
     return ERR_OK;
-}
+}//ok
+#endif
 
-err_flag pop_back_deque(er_deque * dq, struct s_graph_entry ** elem){
-
+static err_flag pop_back_deque(er_deque * dq, struct s_graph_entry ** elem){
+    /*
+    */
     def_err_handler(!dq,"pop_back_deque", ERR_NULL);
     def_err_handler(!dq,"pop_back_deque", ERR_NULL);
     warning_handler(dq->size == 0, "pop_back_deque",ERR_VALS, *elem = NULL ; return ERR_OK;);
@@ -112,10 +141,11 @@ err_flag pop_back_deque(er_deque * dq, struct s_graph_entry ** elem){
 }
 
 err_flag bfs_graph(er_graph * g, struct s_graph_entry * start, const  struct s_graph_entry * dest, int64_t * dist){
-    /*
-    bfs, returns the min distance between start and dest in *dist 
-    O(n+m) 
-    */
+    
+    def_err_handler(!g, "bfs_graph g", ERR_NULL);
+    def_err_handler(!start, "bfs_graph start", ERR_NULL);
+    def_err_handler(!dest,"bfs_graph dest", ERR_NULL);
+    def_err_handler(!dist,"bfs_graph dist", ERR_NULL);
 
     if(start == dest ){
         *dist = 0 ;
@@ -126,7 +156,6 @@ err_flag bfs_graph(er_graph * g, struct s_graph_entry * start, const  struct s_g
     init_deque(&dq,default_deque_size);
 
     uint8_t found = 0 ;
-
     uint8_t * visited = calloc(g->nb_nodes, sizeof(uint8_t));
     visited[start - g->adjacency_lists] = 1 ;
 
@@ -140,7 +169,6 @@ err_flag bfs_graph(er_graph * g, struct s_graph_entry * start, const  struct s_g
         
         struct s_graph_entry * node ;
         
-
         pop_back_deque(&dq,&node);
         def_err_handler(!node, "bfs_graph node", ERR_VALS);
 
@@ -148,7 +176,6 @@ err_flag bfs_graph(er_graph * g, struct s_graph_entry * start, const  struct s_g
             if(node->neighboors_ref[i] == dest ){
                 
                 *dist = dist_tab[node - g->adjacency_lists] + 1 ;
-
                 found = 1 ;
                 break;
             }
@@ -156,11 +183,9 @@ err_flag bfs_graph(er_graph * g, struct s_graph_entry * start, const  struct s_g
                 add_front_deque(&dq, node->neighboors_ref[i]);
                 visited[node->neighboors_ref[i] - g->adjacency_lists] = 1 ;
                 dist_tab[node->neighboors_ref[i] - g->adjacency_lists] = dist_tab[node - g->adjacency_lists] + 1;
-            }
-            
+            }      
         }
-        if(found) break;
-       
+        if(found) break;  
     }
  
     if(!found){
@@ -171,20 +196,10 @@ err_flag bfs_graph(er_graph * g, struct s_graph_entry * start, const  struct s_g
     free(dist_tab);
     free(visited);
     return ERR_OK;
-}//tested; maybe wrong
-
-
+}//tested; maybe wrong; buggy I think
 
 err_flag generate_spanning_tree(er_graph * g, er_graph * tree, dynarr_links * removed_links ){
-    /*
-    g -> not null & initialized & connex 
-    tree -> not null 
-
-    creates a spanning tree from g in tree by doing a DFS. IF g isn't connex 
-    the tree will be the spanning tree of one of it's connected componnents.
     
-    The DFS also keeps track of the deleted nodes in the removed_links array. 
-    */
     def_err_handler(!g, "generate_spanning_tree g", ERR_NULL);
     def_err_handler(!tree, "generate_spanning_tree tree", ERR_NULL);
     def_err_handler(!removed_links, "generate_spanning_tree removed_links", ERR_NULL);
@@ -207,7 +222,7 @@ err_flag generate_spanning_tree(er_graph * g, er_graph * tree, dynarr_links * re
     while(s.cur){
 
         int64_t node_index;
-        err_flag failure = pop_stack(&s, &node_index);
+        failure = pop_stack(&s, &node_index);
         def_err_handler(failure, "generate_spanning_tree", failure);
      
         struct s_graph_entry * cur_node = &gcopy.adjacency_lists[node_index];
@@ -231,7 +246,6 @@ err_flag generate_spanning_tree(er_graph * g, er_graph * tree, dynarr_links * re
                         break;
                     }
                 }
-
             }
             if( cur_node->printed_links[i] != true ){
                 
@@ -250,8 +264,7 @@ err_flag generate_spanning_tree(er_graph * g, er_graph * tree, dynarr_links * re
                 }
             }
         } 
-    }
-  
+    } 
     free(seen);
     free_stack(&s);
     free_graph(&gcopy);
@@ -259,12 +272,7 @@ err_flag generate_spanning_tree(er_graph * g, er_graph * tree, dynarr_links * re
 }//tested ; works :O
 
 err_flag deletable_nodes(er_graph * tree, er_dynarr_nodes * darn  ){
-    /*
-    tree -> not null & not empty 
-    darn -> not null 
-    if tree isn't actually a tree and contains a cycle the function 
-    will not stop.
-    */
+   
     def_err_handler(!tree, "deletable_nodes tree" ,ERR_NULL);
     def_err_handler(!darn, "deletable_nodes darn" ,ERR_NULL);
 
@@ -273,8 +281,7 @@ err_flag deletable_nodes(er_graph * tree, er_dynarr_nodes * darn  ){
            err_flag failure = push_dynarr_nodes(darn, &tree->adjacency_lists[i]);
            def_err_handler(failure, "deletable_nodes", failure);
         }
-    }
-    
+    }  
     return ERR_OK;
 }
 

@@ -9,11 +9,16 @@
 #include "points.h"
 
 /*
-entities.h defines basic manipulation of "entities" , which include players, exit, ennemies ,... 
+___________    .___            __________                                  
+\_   _____/  __| _/ ____   ____\______   \__ __  ____   ____   ___________ 
+ |    __)_  / __ | / ___\_/ __ \|       _/  |  \/    \ /    \_/ __ \_  __ \
+ |        \/ /_/ |/ /_/  >  ___/|    |   \  |  /   |  \   |  \  ___/|  | \/
+/_______  /\____ |\___  / \___  >____|_  /____/|___|  /___|  /\___  >__|   
+        \/      \/_____/      \/       \/           \/     \/     \/       
 
+entities.h defines basic manipulation of "entities" , which include players, exit, ennemies ,... 
 more advanced manipulation of ennemies is found in ennemies.h
 */
-
 typedef struct s_entity{
     
     uint8_t ch ;
@@ -30,7 +35,6 @@ typedef er_entity er_exit;
 #define declare_er_player(p,x,y) er_player p={'@',x,y,NULL, COLOR_CURNODE};
 #define declare_er_exit(e,x,y) er_exit e={'%',x,y,NULL, COLOR_EXIT};
 #define declare_er_ennemy(e,x,y) er_ennemy e={'!',x,y,NULL, COLOR_ENNEMY};
-
 
 extern err_flag init_ent_pos(er_exit * ex, er_player* pl, er_entab * entab, er_graph * g,  dynarr_points * darp);
 /*
@@ -60,7 +64,6 @@ extern err_flag wprint_entity(WINDOW * w , er_entity * pl, uint32_t distx, uint3
 #define wprint_player wprint_entity
 #define wprint_exit wprint_entity
 #define wprint_ennemy wprint_entity
-
 
 extern err_flag wprint_entity_fancy(WINDOW * w , er_player * pl, uint32_t distx, uint32_t disty);
 /*

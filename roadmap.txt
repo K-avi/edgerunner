@@ -3,10 +3,13 @@ version alpha : ---------------------------
 
 misc : 
 -> delete useless code 
-    -> make misc.c / misc.h , points.c,h search_utils.c,h less messy 
+    -> make misc.c / misc.h less messy 
+    -> merge ennemy.c and entities.change
+-> remove useless .h includes
+
 -> put every global in smtg like global.c cuz It's annoying to find them. 
    at least put them at the top of the h files ffs 
-
+   -> actually no 
 
 main :
 -> enable option to change parameters (modify globals w options)

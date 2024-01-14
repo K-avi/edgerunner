@@ -6,7 +6,7 @@
 #include "misc.h"
 #include "points.h"
 #include <curses.h>
-//don't include entities.h cuz it includes this
+
 /*
 ennemy.h defines the functions / structures used to manipulate the ennemies during a game
 */
@@ -62,8 +62,6 @@ extern err_flag move_rest(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_poi
     I probably don't need to export them but I do anyways :/
 */
 
-
-
 extern err_flag init_entab(er_entab * entab, uint32_t size);
 /*
     entab -> not null 
@@ -71,6 +69,7 @@ extern err_flag init_entab(er_entab * entab, uint32_t size);
 
     initialized the entab passed by reference to be able to contain size ennemies / rules
 */
+
 extern err_flag append_entab(er_entab * entab , const er_ennemy * ennemy , er_enrules * rules );
 /*
     entab -> not null & initialized 
@@ -80,6 +79,7 @@ extern err_flag append_entab(er_entab * entab , const er_ennemy * ennemy , er_en
     adds the ennemy and the rules associated with it  at the last index of the
     entab passed as argument. 
 */
+
 extern err_flag update_entab(er_entab * entab, const uint32_t * indexes_incr, const double * coeffs_incr );
 /*
     entab -> not null & initialized 
@@ -88,6 +88,7 @@ extern err_flag update_entab(er_entab * entab, const uint32_t * indexes_incr, co
     updates the entry of the ennemy tab by increasing one index at each entry by each coefficient. 
     i.e : entab->rules[i].coeffs[indexes_incr[i]] = coeffs_incr[i] *  entab->rules[i].coeffs[indexes_incr[i]];
 */
+
 extern err_flag free_entab(er_entab * en );
 /*
     en -> not null 

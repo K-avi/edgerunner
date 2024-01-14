@@ -1,5 +1,7 @@
 #ifndef ER_ERFLAGS_H 
 #define ER_ERFLAGS_H
+
+#include "common.h"
 /*
 ___________    .___            __________                                  
 \_   _____/  __| _/ ____   ____\______   \__ __  ____   ____   ___________ 
@@ -10,23 +12,19 @@ ___________    .___            __________
 
 misc.h defines the macros , functions and flags used to report error and warnings in the 
 project , also defines manipulation o a bunch of dynamic arrays 
+
+misc.h is a fucking mess.
 */
-#include "common.h"
 
 typedef uint8_t err_flag; //value to know wether a function encountered a problem , 0 ok, {1..255} -> error code
 /*
 the enum of flags ; I might add stuff to it at some point.
 */
-typedef enum ERR_FLAGS{
-    
-    ERR_OK = 0, ERR_NULL , ERR_ALLOC, ERR_REALLOC, ERR_VALS, ERR_NOTNULL,
-    
+typedef enum ERR_FLAGS{   
+    ERR_OK = 0, ERR_NULL , ERR_ALLOC, ERR_REALLOC, ERR_VALS, ERR_NOTNULL,  
 }flags ;
 
-/***********************************************************************/
 /*functions and macros*/
-
-
 
 extern void er_report( FILE * flux, const char * repport_msg, const char * error_msg , err_flag flag);
 /*
@@ -54,17 +52,13 @@ extern void er_report( FILE * flux, const char * repport_msg, const char * error
 /*
 same as error_hanler but doesn't return anything
 */
-
 //I really like these macros I just think they're neat the C preprocessor is crazy for this ngl 
-
 /*
     the default macro functions are safer / easier to use. I recommand sticking to them. 
-
     they don't execute any code and just report the error / warning if cond is true.
 */
 #define def_err_handler(cond,msg,flag) error_handler(cond,msg,flag,;)
 #define def_war_handler(cond,msg,flag) warning_handler(cond,msg,flag,;)
-
 
 extern size_t default_arr_size; 
 extern double default_realloc;
@@ -87,7 +81,6 @@ typedef er_dynaru32 er_stacku32;
 #define declare_dynarru32(dynarr) er_dynaru32 dynarr; dynarr.cur = 0; dynarr.max=0; dynarr.elems=NULL;
 #define declare_stacku32 declare_dynarru32
 
-
 extern err_flag init_dynarr( er_dynaru32 * dynarr, uint32_t size);
 #define init_stack init_dynarr
 extern err_flag push_dynarr( er_dynaru32 * dynarr, uint32_t elem); 
@@ -106,9 +99,9 @@ typedef struct s_dynar_nref{
 //(I'll have to put every dynarr type inside a single generic dynarr call or smtg)
 #define declare_darn(dynarr) er_dynarr_nodes dynarr; dynarr.cur = 0; dynarr.max=0; dynarr.elems=NULL;
 
-
 err_flag init_dynarr_nodes( er_dynarr_nodes * darn, uint32_t size);
 err_flag push_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry * elem);
 void free_dynarr_nodes( er_dynarr_nodes * dynarr);
 err_flag pop_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry ** elem);
+
 #endif 

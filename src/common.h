@@ -20,8 +20,6 @@ and has some basic defines
 #include <string.h>
 #include "misc.h"
 #include <stdbool.h>
-//stdbool is not really usefull for the game so macros 
-
 
 #define max(val1,val2) val1 > val2 ? val1 : val2 
 #define min(val1,val2) val2 > val1 ? val1 : val2 
@@ -37,9 +35,6 @@ extern bool colors_on ;
 #define COLOR_NODE 5
 #define COLOR_NODE_NEW 6
 
-#define debug
-
-
-
+//#define debug
 
 #endif 

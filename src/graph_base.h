@@ -1,5 +1,8 @@
 #ifndef ER_GRAPH_BASE_H 
 #define ER_GRAPH_BASE_H 
+
+#include "common.h"
+#include "misc.h"
 /*
 ___________    .___            __________                                  
 \_   _____/  __| _/ ____   ____\______   \__ __  ____   ____   ___________ 
@@ -8,13 +11,12 @@ ___________    .___            __________
 /_______  /\____ |\___  / \___  >____|_  /____/|___|  /___|  /\___  >__|   
         \/      \/_____/      \/       \/           \/     \/     \/       
 
-graph_base.h defines basic graph structure and it's API
+graph_base.h defines the Edgerunner graph structure and it's API. 
+
+It also defines the generate_level function which is used to generate graphs during the game 
 */
 
-#include "common.h"
-#include "misc.h"
-
-//should be dynamic array at least for generation 
+//adjacency list structure
 typedef struct s_graph_entry{
 
     uint32_t cur ;
@@ -25,7 +27,7 @@ typedef struct s_graph_entry{
     
 }er_adjlist ;
 #define declare_adjlist(__alist) er_adjlist __alist; (__alist).nb_neighboors = 0 ; (__alist).max_neighboors = 0; (__alist).neighboors_ref = NULL; (__alist).printed_links = NULL;
-
+//graph structure
 typedef struct s_graph{ 
 
     size_t nb_nodes ; 
@@ -63,13 +65,15 @@ extern err_flag init_graph(er_graph * graph, size_t nb_nodes);
 /*
     graph -> not null 
 
-    initialized graph with nb_nodes 
+    initializes a graph with nb_nodes 
 */
+
 extern err_flag free_graph(er_graph * graph);
 /*
     graph -> 
     free function yk
 */
+
 extern err_flag copy_graph(er_graph * gsource, er_graph * gdest);
 /*
     gsource -> not null , initialized
@@ -77,23 +81,20 @@ extern err_flag copy_graph(er_graph * gsource, er_graph * gdest);
 
     copies gsource to gdest
 */
+
 extern err_flag app_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
 /*
     graph -> not null & initialized 
     node1, node2 -> lesser than graph->nb_nodes
 
-    appends the undirected link  {node1, node2} to graph
+    appends the undirected link  {node1, node2} to graph if it isn't already 
+    in the graph. 
+    O(d(node1) + d(node2))
 */
 
 #ifdef debug 
 extern err_flag fprint_graph(FILE * flux, er_graph * graph); 
-//more advanced manipulation functions
 extern err_flag app_node_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
-//extern err_flag del_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
-//extern err_flag del_node_graph(er_graph * graph , uint32_t node); 
-
 #endif
-
-
 
 #endif 

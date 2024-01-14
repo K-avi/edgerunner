@@ -3,6 +3,9 @@
 #include "search_utils.h"
 #include "points.h"
 
+//some globals
+double def_pail = 0.5, def_pajk = 1, def_pdn = 0.05 , def_pal = 0.4;
+uint32_t row_size = DEFAULT_ROW_SIZE;
 #define calloc_gentry(alist, nb_neigh) (alist)->neighboors_ref = calloc( (nb_neigh),sizeof(er_adjlist*) ); (alist)->printed_links = calloc( (nb_neigh),sizeof(bool) ); (alist)->max = (nb_neigh); (alist)->cur = 0;
 
 /**functions to initialize the adjacency lists **/
@@ -102,9 +105,6 @@ static err_flag del_adjlist(er_adjlist * alist, const er_adjlist * neighboor_ref
 }//tested ; seems ok
 
 static err_flag free_adjlist( er_adjlist * alist){
-    /*
-    whatever 
-    */
     if(alist){
         if(alist->neighboors_ref){
             free(alist->neighboors_ref);
@@ -119,36 +119,10 @@ static err_flag free_adjlist( er_adjlist * alist){
     return ERR_OK;
 }//tested; ok 
 
-#ifdef debug 
-static err_flag fprint_adjlist( FILE * flux, const er_adjlist * alist ){
-    /*
-    flux -> not null | null 
-    gentry -> null | not null 
-    */
-    if(!flux){
-        flux = stdout; 
-    }
-    if(!alist){
-        fprintf(flux, "null pointer passed as an adjlist\n");
-    }else{
-        fprintf(flux, "node of reference %p with %u neighboors : ", (void*)alist, alist->cur);
-        for(uint32_t i = 0 ; i < alist->cur ; i ++){
-            fprintf(flux, "%p ", (void*) alist->neighboors_ref[i]);
-        }
-        fprintf(flux, "\n");
-    }
-    
-    return ERR_OK;
-}//tested ; ok 
-#endif
-
 /**functions to initialize the graph **/
 
 err_flag init_graph(er_graph * graph, size_t nb_nodes){
-    /*
-    graph -> not null & not initialized | initialized (throws warnings)
-    */
-
+ 
     def_err_handler(!graph,"init_graph", ERR_NULL);
     def_war_handler(graph->adjacency_lists,"init_graph", ERR_NOTNULL);
     def_war_handler(!nb_nodes, "init_graph", ERR_VALS);
@@ -182,9 +156,7 @@ err_flag init_graph(er_graph * graph, size_t nb_nodes){
 
 
 err_flag free_graph(er_graph * graph){
-    /*
-    whatever
-    */
+
     if(graph){
         if(graph->adjacency_lists){
             for(uint32_t i = 0 ; i < graph->nb_nodes ; i++){
@@ -209,39 +181,8 @@ err_flag free_graph(er_graph * graph){
     return ERR_OK;
 }//tested seems ok 
 
-#ifdef debug 
-err_flag fprint_graph(FILE * flux, er_graph * graph){
-    /*
-    whatever
-    */
-    if(!flux){
-        flux = stdout ; 
-    }
-    if(!graph){
-        fprintf(flux, "null pointer passed as graph\n");
-        return ERR_OK;
-    }
-    if(!graph->adjacency_lists){
-        fprintf(flux, "null pointer passed as graph->adjacency_lists\n");
-        return ERR_OK;
-    }
-
-    for(uint32_t i = 0 ; i < graph->nb_nodes ; i ++){
-        fprint_adjlist(flux, &graph->adjacency_lists[i]);
-    }
-
-    return ERR_OK;
-}//yeah 
-#endif
-
-/*new manipulation functions*/
-
 err_flag app_link_graph(er_graph * graph , uint32_t node1, uint32_t node2){
-    /*
-    graph -> not null & initialized
-    node1 -> node1 < graph->nb_nodes
-    node2 -> node2 < graph->nb_nodes
-    */
+
     def_err_handler(!graph,"app_link_graph", ERR_NULL); 
     def_err_handler(!graph->adjacency_lists,"app_link_graph adjlists", ERR_NULL); 
     def_err_handler(node1 > graph->nb_nodes,"app_link_graph node1", ERR_VALS);
@@ -301,9 +242,6 @@ static err_flag del_node_graph(er_graph * graph, uint32_t node){
     return ERR_OK;
 }//tested ; ok 
 
-/*****GRAPH CURSES FUNCTIONS ****/
-uint32_t row_size = DEFAULT_ROW_SIZE;
-
 static err_flag generate_lattice(er_graph * graph, uint32_t n ){
     /*
     generates n*n lattice. 
@@ -339,7 +277,6 @@ static err_flag generate_lattice(er_graph * graph, uint32_t n ){
     }
     return ERR_OK;
 }//tested ; ok 
-
 
 static err_flag copy_adjlist(er_adjlist * asource, er_adjlist * adest, struct s_graph_entry * first_ref_source, struct s_graph_entry * first_ref_dest){
 
@@ -388,12 +325,10 @@ err_flag copy_graph(er_graph * gsource, er_graph * gdest){
         err_flag failure = copy_adjlist(&gsource->adjacency_lists[i], &gdest->adjacency_lists[i], gsource->adjacency_lists, gdest->adjacency_lists);
         def_err_handler(failure, "copy_graph", failure);
     }
-
     return ERR_OK;
 }
 
-
-err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t n, double pail, double pajk, double pdn, double pal){
+static err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t n, double pail, double pajk, double pdn, double pal){
     /*
         gsource -> not null & initialized 
         gdest -> not null 
@@ -409,7 +344,6 @@ err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t
         all of these operations are ~ linear so it's pretty good even though 
         it's really convoluted
     */
-
     bool * added = calloc(gsource->nb_nodes , sizeof(bool) );
     for(uint32_t i = 0 ; i < gsource->nb_nodes - n   ; i++ ){
       
@@ -419,7 +353,6 @@ err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t
                 def_err_handler(failure, "randomize_lattice app1", failure);
                 added[i] = TRUE;  
             }
-
         }if((double)rand()/(double)RAND_MAX < pajk ){
             if(i%n != 0 ){
                 if(!added[i-1]){
@@ -455,22 +388,15 @@ err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t
     free_dynarr_nodes(&darn);
     for(uint32_t i = 0 ; i < removed_links.cur ; i++){
         if((double)rand()/(double)RAND_MAX < pal ){
-
             app_link_graph(gdest, removed_links.elems[i].x, removed_links.elems[i].y);
         }
     }
-    free_dynl(&removed_links);
-    
+    free_dynl(&removed_links);  
     return ERR_OK;
 }//tested; ok  
 
-double def_pail = 0.5, def_pajk = 1, def_pdn = 0.05 , def_pal = 0.4;
-
 err_flag generate_level(er_graph * map){
-    /*
-     map -> not null , not initialized
-    */
-   
+  
     def_err_handler(!map, "generate_level", ERR_NULL);
 
     declare_graph(g);
@@ -483,3 +409,49 @@ err_flag generate_level(er_graph * map){
     free_graph(&g);
     return ERR_OK;
 }
+
+#ifdef debug 
+static err_flag fprint_adjlist( FILE * flux, const er_adjlist * alist ){
+    /*
+    flux -> not null | null 
+    gentry -> null | not null 
+    */
+    if(!flux){
+        flux = stdout; 
+    }
+    if(!alist){
+        fprintf(flux, "null pointer passed as an adjlist\n");
+    }else{
+        fprintf(flux, "node of reference %p with %u neighboors : ", (void*)alist, alist->cur);
+        for(uint32_t i = 0 ; i < alist->cur ; i ++){
+            fprintf(flux, "%p ", (void*) alist->neighboors_ref[i]);
+        }
+        fprintf(flux, "\n");
+    }
+    
+    return ERR_OK;
+}//tested ; ok 
+
+err_flag fprint_graph(FILE * flux, er_graph * graph){
+    /*
+    whatever
+    */
+    if(!flux){
+        flux = stdout ; 
+    }
+    if(!graph){
+        fprintf(flux, "null pointer passed as graph\n");
+        return ERR_OK;
+    }
+    if(!graph->adjacency_lists){
+        fprintf(flux, "null pointer passed as graph->adjacency_lists\n");
+        return ERR_OK;
+    }
+
+    for(uint32_t i = 0 ; i < graph->nb_nodes ; i ++){
+        fprint_adjlist(flux, &graph->adjacency_lists[i]);
+    }
+
+    return ERR_OK;
+}//yeah 
+#endif
