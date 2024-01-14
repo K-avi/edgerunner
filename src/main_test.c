@@ -10,6 +10,7 @@
 #include "ennemy.h"
 
 #include "search_utils.h"
+bool colors_on = 0 ;
 
 int main( int argc , char ** argv){
 
@@ -245,24 +246,24 @@ printf("\n\n\n");
     */
 
     declare_graph(gsource); 
-    declare_graph(gdest); 
+   // declare_graph(gdest); 
 
     declare_dynarr(dynarr_points, darp);
     init_dynp(&darp, default_arr_size);
-    gen_coordinates(4,4,&darp);
+    gen_coordinates(5,5,&darp);
 
 
-    generate_lattice(&gsource, 4);
+   // generate_lattice(&gsource, 4);
 
-    safe_randomize_lattice(&gsource, &gdest, 4, 0.6, 0.8, 0.01, 0.6);
-    
+   // safe_randomize_lattice(&gsource, &gdest, 4, 0.6, 0.8, 0.01, 0.6);
+    generate_level(&gsource);
     initscr();
-    wprintw_graph(stdscr, &darp, def_distx, def_disty, &gdest);
+    wprintw_graph(stdscr, &darp, def_distx, def_disty, &gsource);
     getch();
     endwin();
 
     free_graph(&gsource); 
-    free_graph(&gdest);
+    //free_graph(&gdest);
     free_dynp(&darp);
 
     return 0 ; 

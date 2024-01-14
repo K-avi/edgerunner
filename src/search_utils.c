@@ -223,23 +223,35 @@ err_flag generate_spanning_tree(er_graph * g, er_graph * tree, dynarr_links * re
                 failure = push_stack(&s, neighbor_index);
                 def_err_handler(failure, "generate_spanning_tree", failure);
 
-            }/*else if(! cur_node->printed_links[i]){
-                //prolly wrong (appends the same guy multiple times smh)
+                //sets attribute to true to not delete twice 
+                cur_node->printed_links[i] = true ;                
+                for(uint32_t j = 0 ; j < gcopy.adjacency_lists[neighbor_index].cur; j++){
+                    if(gcopy.adjacency_lists[neighbor_index].neighboors_ref[j] == cur_node){
+                        gcopy.adjacency_lists[neighbor_index].printed_links[j] = true;
+                        break;
+                    }
+                }
+
+            }
+            if( cur_node->printed_links[i] != true ){
+                
+             
                 er_link l = {node_index, neighbor_index };
-                err_flag failure = append_dynl(removed_links, &l );
+                failure = append_dynl(removed_links, &l );
                 def_err_handler(failure, "generate_spanning_tree", failure);
 
                 //sets attribute to true to not delete twice 
                 cur_node->printed_links[i] = true ;                
-                for(uint32_t j = 0 ; j < cur_node->neighboors_ref[i]->cur; j++){
-                    if(cur_node->neighboors_ref[i]->neighboors_ref[j] == cur_node){
-                        cur_node->neighboors_ref[i]->printed_links[j] = true;
+                for(uint32_t j = 0 ; j < gcopy.adjacency_lists[neighbor_index].cur; j++){
+                    if(gcopy.adjacency_lists[neighbor_index].neighboors_ref[j] == cur_node){
+                        gcopy.adjacency_lists[neighbor_index].printed_links[j] = true;
                         break;
                     }
                 }
-            }*/
+            }
         } 
     }
+  
     free(seen);
     free_stack(&s);
     free_graph(&gcopy);

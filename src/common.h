@@ -29,5 +29,16 @@ and has some basic defines
 #define TRUE 1 
 #define FALSE 0 
 
+extern bool colors_on ;
+#define COLOR_EXIT 1 
+#define COLOR_ENNEMY 2 
+#define COLOR_CURNODE 3
+#define COLOR_LINK 4
+#define COLOR_NODE 5
+
+#define debug
+
+
+
 
 #endif 

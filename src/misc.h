@@ -9,12 +9,11 @@ ___________    .___            __________
         \/      \/_____/      \/       \/           \/     \/     \/       
 
 misc.h defines the macros , functions and flags used to report error and warnings in the 
-project 
+project , also defines manipulation o a bunch of dynamic arrays 
 */
 #include "common.h"
 
-typedef uint8_t err_flag; 
-
+typedef uint8_t err_flag; //value to know wether a function encountered a problem , 0 ok, {1..255} -> error code
 /*
 the enum of flags ; I might add stuff to it at some point.
 */
@@ -27,6 +26,9 @@ typedef enum ERR_FLAGS{
 /***********************************************************************/
 /*functions and macros*/
 
+
+
+extern void er_report( FILE * flux, const char * repport_msg, const char * error_msg , err_flag flag);
 /*
     flux -> not null 
     repport_msg -> not null 
@@ -38,21 +40,22 @@ typedef enum ERR_FLAGS{
     Some wrappers are defined around this function to avoid code redundancy
 */
 
-extern void er_report( FILE * flux, const char * repport_msg, const char * error_msg , err_flag flag);
-
 //some wrappers arround the er_report function ; I recommand sticking to the def_err/war_handlers 
 //bc passing a code block to a macro is very much not safe lol
+
+#define error_handler(cond, msg,flag,handler_code) if((cond)){er_report(stderr, "error", (msg), (flag)); {handler_code;} return (flag);}
 /*
     the error_handler macro function checks if cond==TRUE, reports the error 
     associated with flag if it's the case and executes hanlder_code before returning the value of flag.
 */
-#define error_handler(cond, msg,flag,handler_code) if((cond)){er_report(stderr, "error", (msg), (flag)); {handler_code;} return (flag);}
+
+
+#define warning_handler(cond,msg,flag, handler_code) if((cond)){er_report(stderr, "warning", (msg), (flag)); {handler_code;}}
 /*
 same as error_hanler but doesn't return anything
 */
-#define warning_handler(cond,msg,flag, handler_code) if((cond)){er_report(stderr, "warning", (msg), (flag)); {handler_code;}}
-//I really like these macros I just think they're neat
-//the C preprocessor is crazy for this ngl 
+
+//I really like these macros I just think they're neat the C preprocessor is crazy for this ngl 
 
 /*
     the default macro functions are safer / easier to use. I recommand sticking to them. 
@@ -65,7 +68,6 @@ same as error_hanler but doesn't return anything
 
 extern size_t default_arr_size; 
 extern double default_realloc;
-
 
 extern err_flag generic_realloc(void ** array, size_t elem_size, uint32_t nb_elem);
 /*

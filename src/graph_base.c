@@ -42,7 +42,7 @@ static err_flag realloc_adjlist(er_adjlist * alist, double coeff){
    return ERR_OK;
 }//tested
 
-err_flag append_adjlist(er_adjlist * alist, er_adjlist * neighboor_ref){
+static err_flag append_adjlist(er_adjlist * alist, er_adjlist * neighboor_ref){
     /*
     graph_entry -> not null & initialized  
     neighboor_ref -> not null 
@@ -51,6 +51,13 @@ err_flag append_adjlist(er_adjlist * alist, er_adjlist * neighboor_ref){
     def_err_handler(!alist->neighboors_ref,"append_gentry alist->elems",ERR_NULL);
     def_err_handler(!neighboor_ref,"append_gentry neighboor_ref",ERR_NULL);
 
+    for(uint32_t i = 0 ; i < alist->cur ; i++){
+        if(alist->neighboors_ref[i] == neighboor_ref){
+            //def_war_handler(ERR_VALS,"append_gentry_alist",ERR_VALS);
+            return ERR_OK;
+        }
+    }
+    
     if(alist->cur == alist->max ){
         err_flag failure = realloc_adjlist(alist, default_realloc);
         def_err_handler(failure, "append_adjlist", ERR_NULL);
@@ -63,7 +70,7 @@ err_flag append_adjlist(er_adjlist * alist, er_adjlist * neighboor_ref){
     return ERR_OK;
 }//tested ; seems ok
 
-err_flag del_adjlist(er_adjlist * alist, const er_adjlist * neighboor_ref){
+static err_flag del_adjlist(er_adjlist * alist, const er_adjlist * neighboor_ref){
     /*
     graph_entry -> not null & initialized  
     neighboor_ref -> not null 
@@ -112,6 +119,7 @@ static err_flag free_adjlist( er_adjlist * alist){
     return ERR_OK;
 }//tested; ok 
 
+#ifdef debug 
 static err_flag fprint_adjlist( FILE * flux, const er_adjlist * alist ){
     /*
     flux -> not null | null 
@@ -132,6 +140,7 @@ static err_flag fprint_adjlist( FILE * flux, const er_adjlist * alist ){
     
     return ERR_OK;
 }//tested ; ok 
+#endif
 
 /**functions to initialize the graph **/
 
@@ -150,6 +159,18 @@ err_flag init_graph(er_graph * graph, size_t nb_nodes){
     graph->printed_nodes = calloc(nb_nodes, sizeof(bool));
     def_err_handler(!graph->printed_nodes, "init_graph printed_nodes", ERR_ALLOC);
 
+    if(colors_on){
+        graph->col_prev = calloc(nb_nodes, sizeof(uint8_t));
+        def_err_handler(!graph->col_prev, "init_graph col_prev", ERR_ALLOC);
+
+        graph->col_cur = calloc(nb_nodes, sizeof(uint8_t));
+        def_err_handler(!graph->col_cur, "init_graph col_cur", ERR_ALLOC);
+
+        memset(graph->col_prev, 255, sizeof(uint8_t) * graph->nb_nodes);
+        memset(graph->col_cur , COLOR_NODE, sizeof(uint8_t) * graph->nb_nodes);
+    }else{
+        graph->col_prev = graph->col_cur = NULL ;
+    }
 
     graph->nb_nodes = nb_nodes;
 
@@ -159,25 +180,6 @@ err_flag init_graph(er_graph * graph, size_t nb_nodes){
     }
     return ERR_OK;
 }//tested ; seems ok 
-
-err_flag append_graph(er_graph * graph , uint32_t index, const er_adjlist * entry){
-    /*
-    graph -> not null & initialized 
-    entry -> not null & initialized 
-    */
-    def_err_handler(!graph,"append_graph graph",ERR_NULL);
-    def_err_handler(!graph->adjacency_lists,"append_graph graph->adjlists",ERR_NULL);
-    def_err_handler(!entry,"append_graph entry",ERR_NULL);
-
-    def_err_handler(index > graph->nb_nodes , "append_graph", ERR_VALS) ;
-    def_war_handler(graph->adjacency_lists[index].neighboors_ref, "append_graph_entry", ERR_NOTNULL);
-
-    graph->adjacency_lists[index].cur = entry->cur ;
-    graph->adjacency_lists[index].neighboors_ref = entry->neighboors_ref ;
-    graph->printed_nodes[index] = 0 ;
-
-    return ERR_OK;
-}//tested seems ok 
 
 
 err_flag free_graph(er_graph * graph){
@@ -194,6 +196,13 @@ err_flag free_graph(er_graph * graph){
         if(graph->printed_nodes){
             free(graph->printed_nodes);
         }
+        if(graph->col_cur){
+            free(graph->col_cur);
+        }
+        if(graph->col_prev){
+            free(graph->col_prev);
+        }
+        graph->col_cur = graph->col_prev = NULL;
         graph->adjacency_lists = NULL;
         graph->nb_nodes = 0; 
         graph->printed_nodes = NULL ;
@@ -201,6 +210,7 @@ err_flag free_graph(er_graph * graph){
     return ERR_OK;
 }//tested seems ok 
 
+#ifdef debug 
 err_flag fprint_graph(FILE * flux, er_graph * graph){
     /*
     whatever
@@ -223,7 +233,7 @@ err_flag fprint_graph(FILE * flux, er_graph * graph){
 
     return ERR_OK;
 }//yeah 
-
+#endif
 
 /*new manipulation functions*/
 
@@ -250,7 +260,7 @@ err_flag app_link_graph(er_graph * graph , uint32_t node1, uint32_t node2){
     return ERR_OK;
 }//tested 
 
-err_flag del_link_graph(er_graph * graph , uint32_t node1, uint32_t node2){
+static err_flag del_link_graph(er_graph * graph , uint32_t node1, uint32_t node2){
     /*
     graph -> not null & initialized
     node1 -> node1 < graph->nb_nodes
@@ -274,7 +284,7 @@ err_flag del_link_graph(er_graph * graph , uint32_t node1, uint32_t node2){
     return ERR_OK;
 }//tested; ok
 
-err_flag del_node_graph(er_graph * graph, uint32_t node){
+static err_flag del_node_graph(er_graph * graph, uint32_t node){
     /*
     graph -> not null & initialized
     graph->adjancely_lists -> not null 
@@ -295,7 +305,7 @@ err_flag del_node_graph(er_graph * graph, uint32_t node){
 /*****GRAPH CURSES FUNCTIONS ****/
 uint32_t row_size = DEFAULT_ROW_SIZE;
 
-err_flag generate_lattice(er_graph * graph, uint32_t n ){
+static err_flag generate_lattice(er_graph * graph, uint32_t n ){
     /*
     generates n*n lattice. 
 
@@ -331,70 +341,6 @@ err_flag generate_lattice(er_graph * graph, uint32_t n ){
     return ERR_OK;
 }//tested ; ok 
 
-err_flag randomize_lattice(er_graph * lattice, uint32_t n, double pdl, double pdn, double pail, double pajk){
-    /*
-    O(n*m)
-    */
-    def_err_handler(!lattice,"randomize_lattice", ERR_NULL);
-    def_err_handler(!lattice->adjacency_lists,"randomize_lattice adj_lists", ERR_NULL);
-    def_war_handler(pdl==1,"randomize_lattice pdl", ERR_VALS);
-    def_war_handler(pdn==1,"randomize_lattice pdn", ERR_VALS);
-    def_war_handler(pail==1,"randomize_lattice pail", ERR_VALS);
-    def_war_handler(pajk==1,"randomize_lattice pajk", ERR_VALS);
-
-    bool * added = calloc(lattice->nb_nodes , sizeof(bool) );
-
-    for(uint32_t i = 0 ; i < lattice->nb_nodes - n   ; i++ ){
-      
-        if((double)rand()/(double)RAND_MAX < pail ){
-            if( i%n != n-1 ){
-                err_flag failure = app_link_graph(lattice, i, i+n+1);
-                def_err_handler(failure, "randomize_lattice app1", failure);
-                added[i] = TRUE;  
-            }
-
-        }if((double)rand()/(double)RAND_MAX < pajk ){
-            if(i%n != 0 ){
-                if(!added[i-1]){
-                   err_flag failure = app_link_graph(lattice, i, i+n-1);
-                   def_err_handler(failure, "randomize_lattice app2", failure);
-                }
-            }
-        }
-    }
-    free(added);
-
-    for(uint32_t i = 0 ; i < lattice->nb_nodes ; i++){
-        
-        if((double)rand()/(double)RAND_MAX < pdn){
-            bool all_sup = (lattice->adjacency_lists[i].cur > 1) ;
-            uint32_t cpt = 0;
-            while (all_sup && (cpt < lattice->adjacency_lists[i].cur) )
-                all_sup = lattice->adjacency_lists[cpt++].cur > 1; 
-            
-            if(all_sup){
-                err_flag failure = del_node_graph(lattice, i);
-                def_err_handler(failure,"randomize_lattice", failure);
-                goto rand_lattice_for_end_it;
-            }
-            
-        }
-        uint32_t nb_tries = 0 ; 
-        while(nb_tries < lattice->adjacency_lists[i].cur){
-            if((double)rand()/(double)RAND_MAX < pdl){
-                if(lattice->adjacency_lists[i].cur > 1 && lattice->adjacency_lists[i].neighboors_ref[0]->cur > 1){
-                    uint32_t j = lattice->adjacency_lists[i].neighboors_ref[0] - lattice->adjacency_lists;
-                    err_flag failure = del_link_graph(lattice,i,j);
-                    def_err_handler(failure,"randomize_lattice", failure);
-                }
-            }
-            nb_tries++;
-        }
-        rand_lattice_for_end_it:;
-    }
-    return ERR_OK;
-}//tested ; seems ok 
-
 
 static err_flag copy_adjlist(er_adjlist * asource, er_adjlist * adest, struct s_graph_entry * first_ref_source, struct s_graph_entry * first_ref_dest){
 
@@ -425,13 +371,25 @@ err_flag copy_graph(er_graph * gsource, er_graph * gdest){
     gdest->printed_nodes = calloc(gsource->nb_nodes, sizeof(bool));
     def_err_handler(!gdest->printed_nodes, "copy_graph printed_nodes", ERR_ALLOC);
 
+    if(colors_on){
+        gdest->col_prev = calloc(gsource->nb_nodes, sizeof(uint8_t));
+        def_err_handler(!gdest->col_prev, "init_graph col_prev", ERR_ALLOC);
+
+        gdest->col_cur = calloc(gsource->nb_nodes, sizeof(uint8_t));
+        def_err_handler(!gdest->col_cur, "init_graph col_cur", ERR_ALLOC);
+
+        memset(gdest->col_prev, 255, sizeof(uint8_t) * gsource->nb_nodes);
+        memset(gdest->col_cur , COLOR_NODE, sizeof(uint8_t) * gsource->nb_nodes);
+    }else{
+        gdest->col_prev = gdest->col_cur = NULL ; 
+    }
+
     gdest->nb_nodes = gsource->nb_nodes ;
 
     for(uint32_t i = 0 ; i < gsource->nb_nodes ; i++){
         err_flag failure = copy_adjlist(&gsource->adjacency_lists[i], &gdest->adjacency_lists[i], gsource->adjacency_lists, gdest->adjacency_lists);
         def_err_handler(failure, "copy_graph", failure);
     }
-    memset(gdest->printed_nodes, 0, gsource->nb_nodes * sizeof(bool));
 
     return ERR_OK;
 }
@@ -481,8 +439,6 @@ err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t
     err_flag failure = generate_spanning_tree(gsource, gdest, &removed_links); 
     def_err_handler(failure,"", failure);
 
-    
-
     uint32_t nb_delnodes = 0 ; 
     for(uint32_t i = 0 ; i < gdest->nb_nodes ; i++){
         if(((double)rand()/(double)RAND_MAX < pdn )){
@@ -499,9 +455,9 @@ err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t
         del_node_graph(gdest, darn.elems[i] - gdest->adjacency_lists);
     }
     free_dynarr_nodes(&darn);
-
     for(uint32_t i = 0 ; i < removed_links.cur ; i++){
         if((double)rand()/(double)RAND_MAX < pal ){
+
             app_link_graph(gdest, removed_links.elems[i].x, removed_links.elems[i].y);
         }
     }
@@ -509,3 +465,23 @@ err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t
     
     return ERR_OK;
 }//tested; ok  
+
+double def_pail = 0.5, def_pajk = 1, def_pdn = 0.05 , def_pal = 0.4;
+
+err_flag generate_level(er_graph * map){
+    /*
+     map -> not null , not initialized
+    */
+   
+    def_err_handler(!map, "generate_level", ERR_NULL);
+
+    declare_graph(g);
+    err_flag failure = generate_lattice(&g, row_size);
+    def_err_handler(failure, "generate_level", failure);
+
+    failure= safe_randomize_lattice(&g, map, row_size, def_pail, def_pajk, def_pdn, def_pal);
+    def_err_handler(failure, "generate_level", failure);
+
+    free_graph(&g);
+    return ERR_OK;
+}

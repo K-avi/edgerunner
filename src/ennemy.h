@@ -42,6 +42,16 @@ typedef struct s_entab{
 }er_entab;
 #define declare_entab(__etab) er_entab __etab = {0,0,NULL,NULL};
 
+
+typedef struct s_gentities{
+    er_player * p ; 
+    er_exit * ex ; 
+    er_entab * ennemies ; 
+}er_game_entities;
+#define declare_gentities(__gentities) er_game_entities __gentities = {NULL, NULL, NULL};
+#define set_gentities(__gentities, __pl , __ex , __en) __gentities = {__pl, __ex, __en};
+
+
 //don't think I need to export any of these ; the only thing i need 
 //is the er_entab 
 extern err_flag  move_random( WINDOW * w, er_ennemy * en , er_graph * g, dynarr_points * darp, er_exit * ex);
@@ -85,7 +95,6 @@ extern err_flag free_entab(er_entab * en );
     frees the entab given as entry. 
     also frees it's ennemies and rules arrays.
 */
-
 
 extern err_flag wprint_entab_fancy(WINDOW * w , er_entab * en, uint32_t distx, uint32_t disty);
 /*

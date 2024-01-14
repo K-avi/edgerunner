@@ -2,8 +2,8 @@
 #include "ennemy.h"
 #include "graph_curses.h"
 
-uint32_t def_distx = 8; 
-uint32_t def_disty = 8;
+uint32_t def_distx = 6; 
+uint32_t def_disty = 6;
 bool fancy_mode = 1; 
 
 static err_flag reset_elements(er_graph * g, dynarr_points * darp, er_player * p, er_entab * entab){
@@ -92,7 +92,8 @@ err_flag move_ennemies(WINDOW * w, er_entab * entab, er_player * p, dynarr_point
     return ERR_OK;
 }
 
-err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *p ){
+//don't need all of these parameters, maybe just window tbh 
+err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp ){
     /*
     function to call to start the game. 
 
@@ -104,7 +105,6 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
     def_err_handler(!w, "start_game w", ERR_NULL);
     def_err_handler(!g,"start_game g", ERR_NULL);
     def_err_handler(!darp, "start_game darp", ERR_NULL);
-    def_err_handler(!p,"start_game p", ERR_NULL);
     def_err_handler(g->nb_nodes > darp->cur, "start_game", ERR_VALS);
 
 
@@ -112,20 +112,23 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
     uint32_t nb_points = 0;
     uint32_t level = 0 ; 
 
+    declare_er_player(p,0,0);
     declare_er_exit(e,0,0);
     declare_er_ennemy(en,0,0);
     declare_entab(entab);  
 
-    
+    declare_gentities(gentities);
+    gentities.p = &p; 
+    gentities.ex = &e; 
+    gentities.ennemies = &entab ;
 
     do{
         level++; 
         uint32_t nb_pts_won = 20 ; 
 
         
-
-        generate_lattice(g,row_size);
-        randomize_lattice(g,row_size, 0.3,0.1,0.8,0.85);
+        generate_level(g);
+        
         init_dynp(darp, default_arr_size);//shitty ; better flush it
         if(level <= 3){
             uint32_t indexes_incr[] = {2}; 
@@ -146,46 +149,40 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
         }
         gen_coordinates(row_size,row_size,darp);
 
-        init_ent_pos(&e,p,&entab,g,darp);
+        init_ent_pos(&e,&p,&entab,g,darp);
     
         if(!fancy_mode){
-            wprint_surroundings(w,p,darp,def_distx,def_disty,g);
-            wprint_player(w,p,def_distx, def_disty);
+            wprint_surroundings(w,&p,darp,def_distx,def_disty,g);
+            wprint_player(w,&p,def_distx, def_disty);
             wprint_exit(w,&e,def_distx,def_disty);
             wprint_entab(w,&entab,def_distx,def_disty);
         }else{
-            wprint_surroundings_fancy(w,p,darp,def_distx,def_disty,g);
-            wprint_player_fancy(w,p,def_distx, def_disty);
-            wprint_exit_fancy(w,&e,def_distx,def_disty);
-            wprint_entab_fancy(w,&entab,def_distx,def_disty);
+            update_gprint_fancy(w, g, darp, &gentities);
         }
    
 
-        while(p->cur_node != e.cur_node && ch!='q'){
+        while(p.cur_node != e.cur_node && ch!='q'){
             
             ch = wgetch(w);
 
             if(ch >= '0' && ch <= '9' && ch != 'q'){
-                if(ch-'0' < p->cur_node->cur){
+                if(ch-'0' < p.cur_node->cur){
                     nb_pts_won = nb_pts_won > 0 ? nb_pts_won - 1 : 0 ;
 
-                    move_player(w,g,darp,p,ch-'0'); 
+                    move_player(w,g,darp,&p,ch-'0'); 
                     bool lost = 0 ; 
-                    move_ennemies(w,&entab,p,darp,g,&lost);
+                    move_ennemies(w,&entab,&p,darp,g,&lost);
 
                     if(!fancy_mode){
-                        wprint_surroundings(w,p,darp,def_distx,def_disty,g);
-                        wprint_player(w,p,def_distx, def_disty);
+                        wprint_surroundings(w,&p,darp,def_distx,def_disty,g);
+                        wprint_player(w,&p,def_distx, def_disty);
                         wprint_exit(w,&e,def_distx,def_disty);
                         wprint_entab(w,&entab,def_distx,def_disty);
                     }else{
-                        wprint_surroundings_fancy(w,p,darp,def_distx,def_disty,g);
-                        wprint_player_fancy(w,p,def_distx, def_disty);
-                        wprint_exit_fancy(w,&e,def_distx,def_disty);
-                        wprint_entab_fancy(w,&entab,def_distx,def_disty);
+                        update_gprint_fancy(w, g, darp, &gentities);        
                     }
 
-                    if(lost){
+                    if(lost && p.cur_node != e.cur_node){
                         
                         mvwprintw(w,0,0,"you died\n");
                         wrefresh(w);
@@ -200,7 +197,7 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp, er_player *
 
        
         nb_points += nb_pts_won;
-        reset_elements(g, darp, p, &entab);
+        reset_elements(g, darp, &p, &entab);
         clear();
         
     }while(ch != 'q');

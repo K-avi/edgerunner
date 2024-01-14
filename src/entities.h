@@ -20,15 +20,16 @@ typedef struct s_entity{
     uint32_t x; 
     uint32_t y; 
     struct s_graph_entry * cur_node;
+    int32_t color; 
 
 }er_entity;
 
 typedef er_entity er_player;
 typedef er_entity er_exit;
 
-#define declare_er_player(p,x,y) er_player p={'@',x,y,NULL};
-#define declare_er_exit(e,x,y) er_exit e={'%',x,y,NULL};
-#define declare_er_ennemy(e,x,y) er_ennemy e={'!',x,y,NULL};
+#define declare_er_player(p,x,y) er_player p={'@',x,y,NULL, COLOR_CURNODE};
+#define declare_er_exit(e,x,y) er_exit e={'%',x,y,NULL, COLOR_EXIT};
+#define declare_er_ennemy(e,x,y) er_ennemy e={'!',x,y,NULL, COLOR_ENNEMY};
 
 
 extern err_flag init_ent_pos(er_exit * ex, er_player* pl, er_entab * entab, er_graph * g,  dynarr_points * darp);
@@ -60,7 +61,7 @@ extern err_flag wprint_entity(WINDOW * w , er_entity * pl, uint32_t distx, uint3
 #define wprint_exit wprint_entity
 #define wprint_ennemy wprint_entity
 
-extern err_flag wprint_surroundings_fancy(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g );
+extern err_flag wprint_surroundings_fancy(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g, const er_game_entities * gent );
 /*
     w -> not null 
     (en & darp & g ) -> not null & initialized

@@ -33,39 +33,67 @@ typedef struct s_graph{
     er_adjlist * adjacency_lists ; 
     bool * printed_nodes ; 
 
+    uint8_t * col_prev ; 
+    uint8_t * col_cur ; 
+
 }er_graph; 
 #define declare_graph(__graph) er_graph __graph; (__graph).nb_nodes = 0 ; (__graph).adjacency_lists = NULL; (__graph).printed_nodes = NULL;
 
-//not storing node labels bc u just do substractions ;O
-
-
-extern err_flag init_graph(er_graph * graph, size_t nb_nodes); 
-extern err_flag append_graph(er_graph * graph , uint32_t index, const er_adjlist * entry); 
-extern err_flag fprint_graph(FILE * flux, er_graph * graph); 
-extern err_flag free_graph(er_graph * graph);
-extern err_flag copy_graph(er_graph * gsource, er_graph * gdest);
-//more advanced manipulation functions
-extern err_flag app_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
-//extern err_flag app_node_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
-extern err_flag del_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
-extern err_flag del_node_graph(er_graph * graph , uint32_t node); 
-
-/**GRAPh GENERATION**/
-
 #define DEFAULT_ROW_SIZE 5
 extern uint32_t row_size ;
+extern double def_pail , def_pajk , def_pdn, def_pal ;
 
-extern err_flag generate_lattice(er_graph * graph, uint32_t n );
-extern err_flag randomize_lattice(er_graph * lattice, uint32_t n , double  pdl, double pdn, double pail, double pajk);
-//lattice : pointer to a lattice graph, Probability Delete Link : proba to delete any link,
-// Probability Delete Node : -//- delete any node Probability Add I,L : let (i,j,k,l) be (n,n+1, 2n,2n+1) 
+extern err_flag generate_level(er_graph * map);
 /*
-nodes of the lattice pail is the probability to add the link {i,l} in the lattice. 
-similarly, pajk is the probability to add {j,k}. You can't add BOTH i,l and j,k since 
-it would make the graph non planar.
+    map -> not null , not initialized 
+
+    generates a level map inside the graph map. A level map is a connected planar graph. 
+
+    alg : 
+            - generates a lattice gsource
+            - randomly adds diagonal links to gsource w proba pail , pajk  
+            - generates the spanning tree of gsource in map and keeps track of deleted links 
+            - deletes a certain number of leaf nodes 
+            - adds back links with probability pal  
+        all of these operations are ~ linear so it's pretty good even though 
+        it's really convoluted
 */
 
-err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t n, double pail, double pajk, double pdn, double pal);
+extern err_flag init_graph(er_graph * graph, size_t nb_nodes); 
+/*
+    graph -> not null 
+
+    initialized graph with nb_nodes 
+*/
+extern err_flag free_graph(er_graph * graph);
+/*
+    graph -> 
+    free function yk
+*/
+extern err_flag copy_graph(er_graph * gsource, er_graph * gdest);
+/*
+    gsource -> not null , initialized
+    gdest -> not null, not initialized (or else memleaks :O)
+
+    copies gsource to gdest
+*/
+extern err_flag app_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
+/*
+    graph -> not null & initialized 
+    node1, node2 -> lesser than graph->nb_nodes
+
+    appends the undirected link  {node1, node2} to graph
+*/
+
+#ifdef debug 
+extern err_flag fprint_graph(FILE * flux, er_graph * graph); 
+//more advanced manipulation functions
+extern err_flag app_node_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
+//extern err_flag del_link_graph(er_graph * graph , uint32_t node1, uint32_t node2); 
+//extern err_flag del_node_graph(er_graph * graph , uint32_t node); 
+
+#endif
+
 
 
 #endif 
