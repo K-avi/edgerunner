@@ -1,5 +1,4 @@
-version alpha : ---------------------------
-
+version beta : ---------------------------
 
 misc : 
 -> delete useless code 
@@ -7,30 +6,23 @@ misc :
     -> merge ennemy.c and entities.change
 -> remove useless .h includes
 
--> put every global in smtg like global.c cuz It's annoying to find them. 
-   at least put them at the top of the h files ffs 
-   -> actually no 
-
 main :
 -> enable option to change parameters (modify globals w options)
     -> some of them are but not all atm 
 -> from the game settings maybe idk
 
-
-
 misc : 
-->code documentation (kinda)
-->code refactoring (merge some files)
-    -> code refactoring is VERY IMPORTANT 
-    -> delete all the unused stuff 
+-> usage documentation (kinda)
+-> build script (detect if libraries and so on)
+-> document problems 
+-> fancy readme.md / presentation 
 
-version beta / 1.0 : -----------------------
+version 1.0 : -----------------------
 
--> REPLACE FREEFUNCTIONS BY FLUSH FUNCTIONS !!!!! 
-
+-> REPLACE FREEFUNCTIONS BY FLUSH FUNCTIONS !!!!! WHY DO I FREE STUFF 
+FLUSH IT FFS 
 
 -> create a menu in a window 
-
 
 ennemy : 
 ->  sillier AI that isn't too dumb (ask fox)

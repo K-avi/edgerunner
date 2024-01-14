@@ -9,9 +9,8 @@ ___________    .___            __________
         \/      \/_____/      \/       \/           \/     \/     \/       
 
 common.h includes libraries used in every file (more or less) 
-and has some basic defines
+as well as some basic macros
 */
-
 
 #include <stdio.h>
 #include <stdlib.h>

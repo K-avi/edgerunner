@@ -11,9 +11,6 @@ ___________    .___            __________
         \/      \/_____/      \/       \/           \/     \/     \/       
 
 misc.h defines the macros , functions and flags used to report error and warnings in the 
-project , also defines manipulation o a bunch of dynamic arrays 
-
-misc.h is a fucking mess.
 */
 
 typedef uint8_t err_flag; //value to know wether a function encountered a problem , 0 ok, {1..255} -> error code
@@ -40,13 +37,11 @@ extern void er_report( FILE * flux, const char * repport_msg, const char * error
 
 //some wrappers arround the er_report function ; I recommand sticking to the def_err/war_handlers 
 //bc passing a code block to a macro is very much not safe lol
-
 #define error_handler(cond, msg,flag,handler_code) if((cond)){er_report(stderr, "error", (msg), (flag)); {handler_code;} return (flag);}
 /*
     the error_handler macro function checks if cond==TRUE, reports the error 
     associated with flag if it's the case and executes hanlder_code before returning the value of flag.
 */
-
 
 #define warning_handler(cond,msg,flag, handler_code) if((cond)){er_report(stderr, "warning", (msg), (flag)); {handler_code;}}
 /*
@@ -71,6 +66,7 @@ extern err_flag generic_realloc(void ** array, size_t elem_size, uint32_t nb_ele
     generic wrapper around realloc 
 */
 
+//why the fuck is this here 
 typedef struct s_dynar_u32{
      uint32_t cur ; 
      uint32_t max ; 
