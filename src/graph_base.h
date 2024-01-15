@@ -14,7 +14,23 @@ ___________    .___            __________
 graph_base.h defines the Edgerunner graph structure and it's API. 
 
 It also defines the generate_level function which is used to generate graphs during the game 
+
+it also defines functions to manipulate dynamic arrays of nodes.
 */
+
+typedef struct s_dynar_nref{
+     uint32_t cur ; 
+     uint32_t max ; 
+     struct s_graph_entry ** elems ; 
+}er_dynarr_nodes;
+//boilerplate first ; think later 
+//(I'll have to put every dynarr type inside a single generic dynarr call or smtg)
+#define declare_darn(dynarr) er_dynarr_nodes dynarr; dynarr.cur = 0; dynarr.max=0; dynarr.elems=NULL;
+
+err_flag init_dynarr_nodes( er_dynarr_nodes * darn, uint32_t size);
+err_flag push_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry * elem);
+void free_dynarr_nodes( er_dynarr_nodes * dynarr);
+err_flag pop_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry ** elem);
 
 //adjacency list structure
 typedef struct s_graph_entry{

@@ -1,21 +1,14 @@
 version beta : ---------------------------
 
 misc : 
--> delete useless code 
-    -> make misc.c / misc.h less messy 
-    -> merge ennemy.c and entities.change
--> remove useless .h includes
-
-main :
--> enable option to change parameters (modify globals w options)
-    -> some of them are but not all atm 
--> from the game settings maybe idk
+    -> delete useless code 
+        -> merge ennemy.c and entities.c (or do I ?)
 
 misc : 
--> usage documentation (kinda)
--> build script (detect if libraries and so on)
--> document problems 
--> fancy readme.md / presentation 
+    -> usage documentation ( at least for the options ...)
+    -> build script (detect if libraries and so on)
+    -> document problems 
+    -> fancy readme.md / presentation 
 
 version 1.0 : -----------------------
 
@@ -33,4 +26,3 @@ game :
 misc : 
 AI vs AI screensaver mode
 2 player mode
-

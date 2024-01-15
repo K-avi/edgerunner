@@ -4,10 +4,7 @@
 #include "common.h"
 #include "graph_base.h"
 #include <curses.h>
-#include "misc.h"
 #include "ennemy.h"
-#include "points.h"
-
 /*
 ___________    .___            __________                                  
 \_   _____/  __| _/ ____   ____\______   \__ __  ____   ____   ___________ 

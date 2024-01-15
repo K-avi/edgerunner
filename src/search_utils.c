@@ -1,6 +1,5 @@
 #include "search_utils.h"
 #include "misc.h"
-#include "points.h"
 
 uint32_t default_deque_size = 16; 
 typedef struct s_deque{
@@ -107,24 +106,6 @@ static err_flag free_deque(er_deque * dq){
     return ERR_OK;
 }//ok
 
-#ifdef debug
-static err_flag pop_front_deque(er_deque * dq, struct s_graph_entry ** elem){
-    /*
-    dq -> not null 
-    elem -> not null
-    */
-    def_err_handler(!dq,"pop_front_deque dq", ERR_NULL);
-    def_err_handler(!elem,"pop_front_deque elem", ERR_NULL);
-    warning_handler(dq->size == 0, "pop_front_deque",ERR_VALS, *elem = NULL ; return ERR_OK;);
-
-	*elem = dq->elems[dq->start];
-    dq->start++;
-
-	dq->size--;
-    return ERR_OK;
-}//ok
-#endif
-
 static err_flag pop_back_deque(er_deque * dq, struct s_graph_entry ** elem){
     /*
     */
@@ -160,7 +141,7 @@ err_flag bfs_graph(er_graph * g, struct s_graph_entry * start, const  struct s_g
     visited[start - g->adjacency_lists] = 1 ;
 
     uint32_t * dist_tab = calloc(g->nb_nodes ,sizeof(uint32_t));
-    memset(dist_tab, -1, g->nb_nodes *sizeof(uint32_t));
+    memset(dist_tab, 255, g->nb_nodes *sizeof(uint32_t));
     dist_tab[start - g->adjacency_lists] = 0 ; 
 
 
@@ -285,4 +266,22 @@ err_flag deletable_nodes(er_graph * tree, er_dynarr_nodes * darn  ){
     return ERR_OK;
 }
 
+
+#ifdef debug
+static err_flag pop_front_deque(er_deque * dq, struct s_graph_entry ** elem){
+    /*
+    dq -> not null 
+    elem -> not null
+    */
+    def_err_handler(!dq,"pop_front_deque dq", ERR_NULL);
+    def_err_handler(!elem,"pop_front_deque elem", ERR_NULL);
+    warning_handler(dq->size == 0, "pop_front_deque",ERR_VALS, *elem = NULL ; return ERR_OK;);
+
+	*elem = dq->elems[dq->start];
+    dq->start++;
+
+	dq->size--;
+    return ERR_OK;
+}//ok
+#endif
 

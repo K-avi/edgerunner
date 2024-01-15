@@ -328,6 +328,74 @@ err_flag copy_graph(er_graph * gsource, er_graph * gdest){
     return ERR_OK;
 }
 
+
+
+err_flag init_dynarr_nodes( er_dynarr_nodes * darn, uint32_t size){
+  def_err_handler(!darn, "init_dynarr", ERR_NULL);
+
+  darn->elems = calloc(size , sizeof(struct s_graph_entry *));
+  def_err_handler(!darn->elems, "init_dynarr", ERR_ALLOC);
+  
+  darn->cur = 0 ; 
+  darn->max = size ; 
+
+  return ERR_OK;
+}
+
+static err_flag realloc_dynarr_nodes( er_dynarr_nodes * arrn , double coeff){
+  
+  def_err_handler(!arrn, "realloc_dynar_nodes", ERR_NULL);
+    def_err_handler(!arrn->elems, "realloc_dynar_nodes elems", ERR_NULL);
+  
+
+  err_flag failure = generic_realloc((void**)&arrn->elems, sizeof(struct s_graph_entry * ), (uint32_t)( (double)(arrn->max+1) * coeff));
+  def_err_handler(failure, "realloc_arrn", failure);
+
+   arrn->max = (uint32_t)( (double)(arrn->max+1) * coeff) ;
+   memset(&arrn->elems[arrn->cur+1], 0, (arrn->max - arrn->cur -1 )* sizeof(struct s_graph_entry *));
+  //set to 0 cuz I don't like habing unitialized stuff lying around
+
+  return ERR_OK;
+}
+err_flag push_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry * elem){
+    def_err_handler(!dynarr, "push_dynarr", ERR_NULL);
+
+    if(dynarr->cur == dynarr->max){
+        err_flag failure = realloc_dynarr_nodes(dynarr, default_realloc);
+        def_err_handler(failure, "push_dynarr", failure);
+    }
+    dynarr->elems[dynarr->cur++] = elem ;
+
+  return ERR_OK;
+}
+
+void free_dynarr_nodes( er_dynarr_nodes * dynarr){
+    if(dynarr){
+      if (dynarr->elems)
+      {
+        free(dynarr->elems); 
+      }
+      dynarr->elems = NULL; 
+      dynarr->cur = dynarr->max = 0 ; 
+    }
+}
+
+err_flag pop_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry ** elem){
+      def_err_handler(!dynarr, "pop_dynarr dynarr", ERR_NULL);
+      def_err_handler(!elem, "pop_dynarr elem", ERR_NULL);
+
+      if(dynarr->cur == 0 ){
+        *elem = NULL; 
+      }else{
+
+        dynarr->cur--;
+        *elem = dynarr->elems[dynarr->cur];
+      }
+      return ERR_OK;
+}
+
+
+
 static err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t n, double pail, double pajk, double pdn, double pal){
     /*
         gsource -> not null & initialized 

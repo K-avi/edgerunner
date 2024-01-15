@@ -2,11 +2,9 @@
 #define ER_GAME_H 
 
 #include "common.h"
-#include "misc.h"
 #include <curses.h>
 #include "graph_base.h"
 #include "entities.h"
-#include "misc.h"
 /*
 ___________    .___            __________                                  
 \_   _____/  __| _/ ____   ____\______   \__ __  ____   ____   ___________ 

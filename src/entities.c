@@ -1,8 +1,6 @@
 #include "entities.h"
 #include "misc.h"
-#include "curses.h"
 #include "graph_curses.h"
-#include "ennemy.h"
 
 static err_flag init_player_pos(er_player * pl , er_graph * g,  dynarr_points * darp, uint32_t * player_index){
     /*

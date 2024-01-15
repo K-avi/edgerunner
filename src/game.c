@@ -1,6 +1,6 @@
 #include "game.h"
-#include "ennemy.h"
 #include "graph_curses.h"
+#include "misc.h"
 
 uint32_t def_distx = 6; 
 uint32_t def_disty = 6;

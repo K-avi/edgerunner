@@ -3,8 +3,6 @@
 
 #include "common.h"
 #include "graph_base.h"
-#include "misc.h"
-#include "points.h"
 #include "ennemy.h"
 /*
 ___________    .___            __________                                  

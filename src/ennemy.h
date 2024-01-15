@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "graph_base.h"
-#include "misc.h"
 #include "points.h"
 #include <curses.h>
 

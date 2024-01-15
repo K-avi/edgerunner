@@ -53,7 +53,6 @@ err_flag move_closest(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_points 
     if(!en->cur_node->cur){
         return ERR_OK;
     }
-
     struct s_graph_entry * min_node = NULL ; 
     int64_t min_dist = INT64_MAX  ;
 
@@ -108,7 +107,6 @@ err_flag move_rest(WINDOW * w , er_ennemy * en , er_graph * g, dynarr_points * d
     return ERR_OK;
 }
 
-
 err_flag init_enrules(er_enrules * dst, er_enrules * src){
     def_err_handler(!dst,"init_enrules", ERR_NULL);
 
@@ -122,8 +120,7 @@ err_flag init_enrules(er_enrules * dst, er_enrules * src){
     for(uint32_t i = 0 ; i < src->size ; i++){
         dst->coeffs[i] = src->coeffs[i]; 
         dst->rule_functions[i] = src->rule_functions[i];
-    }
-    
+    }  
     return ERR_OK;
 }
 
@@ -137,8 +134,6 @@ err_flag free_enrules(er_enrules * en ){
     }
     return ERR_OK;
 }
-
-
 
 err_flag update_enrules(er_enrules * en , uint32_t index_incr, double coeff_incr){
     
@@ -157,10 +152,9 @@ err_flag update_enrules(er_enrules * en , uint32_t index_incr, double coeff_incr
         }
     }
     return ERR_OK;
-}//not tested; doesnt check for shit 
-/******/
+}//tested; doesnt check for shit 
 
-extern err_flag init_entab(er_entab * entab, uint32_t size){
+err_flag init_entab(er_entab * entab, uint32_t size){
     def_err_handler(!entab, "init_entab", ERR_NULL);
 
     entab->ennemies = calloc(size, sizeof(er_ennemy));
@@ -173,7 +167,7 @@ extern err_flag init_entab(er_entab * entab, uint32_t size){
     entab->max = size ; 
 
     return ERR_OK;
-}
+}//ok
 
 static inline err_flag realloc_entab(er_entab * entab , double coeff){
 
@@ -186,10 +180,9 @@ static inline err_flag realloc_entab(er_entab * entab , double coeff){
     entab->max = coeff * (double) entab->max +1 ;
     
     return ERR_OK;
-}
+}//ok
 
 err_flag append_entab(er_entab * entab , const er_ennemy * ennemy , er_enrules * rules ){
-    
     def_err_handler(!entab, "append_entab entab", ERR_NULL);
     def_err_handler(!ennemy, "append_entab ennemy", ERR_NULL);
     def_err_handler(!rules, "append_entab rules", ERR_NULL);
@@ -208,7 +201,7 @@ err_flag append_entab(er_entab * entab , const er_ennemy * ennemy , er_enrules *
 
     entab->cur++;
     return ERR_OK;
-}
+}//ok
 
 err_flag free_entab(er_entab * en ){
 
@@ -222,7 +215,7 @@ err_flag free_entab(er_entab * en ){
     en->cur = en->max = 0 ; 
 
     return ERR_OK;
-}
+}//ok
 
 err_flag update_entab(er_entab * entab, const uint32_t * indexes_incr, const double * coeffs_incr ){
     def_err_handler(!entab, "update_entab", ERR_NULL);

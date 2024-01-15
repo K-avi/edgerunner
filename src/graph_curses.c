@@ -1,5 +1,6 @@
 #include "graph_curses.h"
 #include "game.h"
+#include "misc.h"
 
 static err_flag draw_diag_ur(WINDOW * w, chtype ch, er_points p1, er_points p2 ){
     /*
@@ -204,6 +205,12 @@ err_flag update_gprint_fancy(WINDOW * w,  er_graph * g, dynarr_points * darp, er
                 g->col_cur[i] = COLOR_NODE_NEW;
             }
         }
+    }else{
+        for(uint32_t i = 0 ; i < g->nb_nodes ; i++ ){
+            if(g->printed_nodes[i]){    
+                wprint_node_fancy(w, &darp->elems[i], def_distx, def_disty, -1);
+            }
+        }    
     }
     wprint_entab_fancy(w ,gent->ennemies, def_distx, def_disty);
     wprint_entity_fancy(w,gent->ex, def_distx, def_disty);
@@ -217,7 +224,6 @@ err_flag update_gprint_fancy(WINDOW * w,  er_graph * g, dynarr_points * darp, er
         waddch(w,i+ '0');      
     }
     wrefresh(w);
-   
     return ERR_OK;
 }
 

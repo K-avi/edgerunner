@@ -10,7 +10,8 @@ ___________    .___            __________
 /_______  /\____ |\___  / \___  >____|_  /____/|___|  /___|  /\___  >__|   
         \/      \/_____/      \/       \/           \/     \/     \/       
 
-misc.h defines the macros , functions and flags used to report error and warnings in the 
+misc.h defines the macros , functions and flags used to report error and warnings in the code. 
+misc.h also defines the api to a dynamic array / stack of uint_32t.
 */
 
 typedef uint8_t err_flag; //value to know wether a function encountered a problem , 0 ok, {1..255} -> error code
@@ -20,6 +21,26 @@ the enum of flags ; I might add stuff to it at some point.
 typedef enum ERR_FLAGS{   
     ERR_OK = 0, ERR_NULL , ERR_ALLOC, ERR_REALLOC, ERR_VALS, ERR_NOTNULL,  
 }flags ;
+
+//awkward to put it here but no better place (maybe misc.c/h ?)
+typedef struct s_dynar_u32{
+     uint32_t cur ; 
+     uint32_t max ; 
+     uint32_t * elems ; 
+}er_dynaru32;
+typedef er_dynaru32 er_stacku32;
+
+#define declare_dynarru32(dynarr) er_dynaru32 dynarr; dynarr.cur = 0; dynarr.max=0; dynarr.elems=NULL;
+#define declare_stacku32 declare_dynarru32
+
+extern err_flag init_dynarr( er_dynaru32 * dynarr, uint32_t size);
+#define init_stack init_dynarr
+extern err_flag push_dynarr( er_dynaru32 * dynarr, uint32_t elem); 
+#define push_stack push_dynarr
+extern void free_dynarr( er_dynaru32 * dynarr);
+#define free_stack free_dynarr 
+extern err_flag pop_dynarr( er_dynaru32 * dynarr, int64_t * elem);
+#define pop_stack pop_dynarr
 
 /*functions and macros*/
 
@@ -65,39 +86,4 @@ extern err_flag generic_realloc(void ** array, size_t elem_size, uint32_t nb_ele
 
     generic wrapper around realloc 
 */
-
-//why the fuck is this here 
-typedef struct s_dynar_u32{
-     uint32_t cur ; 
-     uint32_t max ; 
-     uint32_t * elems ; 
-}er_dynaru32;
-typedef er_dynaru32 er_stacku32;
-
-#define declare_dynarru32(dynarr) er_dynaru32 dynarr; dynarr.cur = 0; dynarr.max=0; dynarr.elems=NULL;
-#define declare_stacku32 declare_dynarru32
-
-extern err_flag init_dynarr( er_dynaru32 * dynarr, uint32_t size);
-#define init_stack init_dynarr
-extern err_flag push_dynarr( er_dynaru32 * dynarr, uint32_t elem); 
-#define push_stack push_dynarr
-extern void free_dynarr( er_dynaru32 * dynarr);
-#define free_stack free_dynarr 
-extern err_flag pop_dynarr( er_dynaru32 * dynarr, int64_t * elem);
-#define pop_stack pop_dynarr
-
-typedef struct s_dynar_nref{
-     uint32_t cur ; 
-     uint32_t max ; 
-     struct s_graph_entry ** elems ; 
-}er_dynarr_nodes;
-//boilerplate first ; think later 
-//(I'll have to put every dynarr type inside a single generic dynarr call or smtg)
-#define declare_darn(dynarr) er_dynarr_nodes dynarr; dynarr.cur = 0; dynarr.max=0; dynarr.elems=NULL;
-
-err_flag init_dynarr_nodes( er_dynarr_nodes * darn, uint32_t size);
-err_flag push_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry * elem);
-void free_dynarr_nodes( er_dynarr_nodes * dynarr);
-err_flag pop_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry ** elem);
-
 #endif 

@@ -17,7 +17,7 @@ int main(int argc , char ** argv){
 
     uint64_t opt_mask = 0;
     char c;
-     while ((c = getopt(argc, argv, "hx:y:n:fs")) != -1) {
+     while ((c = getopt(argc, argv, "hx:y:n:fsc")) != -1) {
         
         switch (c) {
         case 'h': //help
@@ -43,6 +43,10 @@ int main(int argc , char ** argv){
             opt_mask |= 1<<5;
             printf("placeholder : score saving isn't implemented yet\n");
             break;  
+        case 'c': //prints high scores and exits
+            opt_mask |= 1<<6;
+            colors_on = false ; 
+            break; 
         case '?':
             
             fprintf(stderr, "Unknown option character `\\x%x'.", optopt);          
@@ -101,7 +105,7 @@ int main(int argc , char ** argv){
     }
 
     colors_on = false ; 
-    if( has_colors()){
+    if( has_colors() && !(opt_mask & 1<<6)){
         colors_on = true ; 
         start_color();
         use_default_colors();
