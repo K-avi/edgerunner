@@ -129,17 +129,22 @@ old version of gcc.
 1. Clone the repo
    ```sh
    git clone https://github.com/k-avi/edgerunner.git
+   cd edgerunner
    ```
-2.1. compile with make and customize your install 
-   ```sh
-   make edgerunner 
-   ```
-   you can copy/move the game binary to /usr/local/bin if you want to be able to use edgerunner as a command 
-   in the terminal.
-2.1. use the build script to compile edgerunner, add it to /usr/local/bin and add a manpage for edgerunner in /usr/local/man
-     the script will also check for dependencies
+2. you can use the build.sh script to compile edgerunner, add it to /usr/local/bin and add a manpage for edgerunner in /usr/local/share/man
+   the script will also check for dependencies. If your linux does not have a /usr/local/share/man directory, the script won't create a man page.
+   You can still copy manpages/edgerunner/man1/edgerunner.1 to your standard man location.
    ```sh
    sudo bash build.sh 
+   ```
+3. If you don't want to install edgerunner in /usr/local/bin , and want to create a binary simply type
+   ```sh
+   make edgerunner  
+   ``` 
+  
+4. If you built edgerunner with build.sh and want to remove it , use the uninstall.sh script.
+   ```sh
+   sudo bash uninstall.sh 
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
