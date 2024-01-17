@@ -33,13 +33,13 @@ void er_report( FILE * flux, const char * repport_msg, const char * error_msg ,e
     every variant of it will rely on it 
     */
     if(! flux){
-        fprintf(stderr,"ussr_report : NULL was passed for flux\n");
+        fprintf(stderr,"er_report : NULL was passed for flux\n");
         return;
     }else if(!repport_msg){
-        fprintf(stderr,"ussr_report : NULL was passed for repport_msg\n");
+        fprintf(stderr,"ur_report : NULL was passed for repport_msg\n");
         return;
     }else if(!error_msg){
-        fprintf(stderr,"ussr_report : NULL was passed for error_msg\n");
+        fprintf(stderr,"er_report : NULL was passed for error_msg\n");
         return; 
     }
     fprintf(flux," %s : %s at %s\n",repport_msg, str_flag(flag), error_msg);

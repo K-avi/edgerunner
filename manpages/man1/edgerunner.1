@@ -1,0 +1,59 @@
+.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH EDGERUNNER 1 "JANUARY 2024" Linux "User Manuals"
+.SH Edgerunner
+edgerunner \- an ncurses based rogue-like where you explore graphs
+.SH SYNOPSIS
+.B edgerunner [-hfsc] [-xyn] [number] 
+.SH DESCRIPTION
+.B foo
+edgerunner is a rogue-like game built with the ncurses library. During 
+the game, the player , represented by '@' has to find exits, represented 
+by '%'. The maze is a random planar graph. In order to move, the player 
+has to enter a number, corresponding to one of the nodes they can go to. 
+The player must also avoid ennemies, represented by '!'. If the ennemy 
+manages to reach the player's node, the game will end.
+.SH OPTIONS
+.IP -h
+Prints help and exits.
+.IP -f
+Forces the 'fancy mode' to be turned off. 
+.IP -s
+Prtins the high scores in stdout and exits (not implemented at the moment)
+.IP -c
+turns off the colors.
+.IP "-x integer"
+Overrides the default horizontal distance between nodes.
+.IP "-y integer"
+Overrides the default vertical distance between nodes.
+.IP "-n integer"
+Overriddes the default size of the grid used to generate the graphs.
+.SH FILES
+None at the moment
+.SH DIAGNOSTICS
+The following diagnostics may be issued on stderr:
+ 
+(error | warning) null pointer passed at (where)
+.RS
+IF something goes wrong, prints a trace of the functions where a NULL pointer 
+was passed as argument.
+.RE
+(error | warning) couldn't allocate memory at (where)
+.RS
+.B Reports malloc errors.
+.RE
+(error | warning) couldn't reallocate memory at (where)
+.RS
+.B Reports realloc errors.
+.RE
+(error | warning) value given not matching expected values (where)
+.RS
+.B Parameter given to a function doesn't match the parameters that the function accepts.
+(error | warning) pointer is not null (where)
+.RS
+.B Non-null pointer was passed to a function when a null pointer is expected
+.SH BUGS
+Some display bugs on small screens
+.SH AUTHOR
+Ivan MULOT-RADOJCIC <https://github.com/k-avi>

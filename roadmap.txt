@@ -1,13 +1,7 @@
 version beta : ---------------------------
 
-bug : 
-
-damn I'm getting close to release that's pretty cool 
-
 misc : 
     -> build script (detect if libraries and so on)
-    -> document problems 
-    -> fancy readme.md / presentation for the github
     -> manpage 
 
 version 1.0 : -----------------------
