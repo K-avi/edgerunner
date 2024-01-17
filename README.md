@@ -70,7 +70,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![product-screenshot]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -149,9 +149,21 @@ old version of gcc.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+![product-screenshot1]
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+To start a game, simply start the program. during the game, you are the 
+_@_ symbol on the screen. You try to reach the _%_ symbol by moving from 
+node to node on a graph. You have to be careful and avoid the ennemy (or ennemies) 
+represented with the _!_ character. 
+The node where the exit is is colored in green , the node where the player is is colored 
+in blue, the nodes where the ennemies are are colored in red.
+
+In order to move from your node to another, type the number appearing on the node. 
+Good luck ! 
+
+product-screenshot1
+
+_For more informations, please refer to the manpage of the game or use the -h options_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -230,3 +242,4 @@ Project Link: [https://github.com/k-avi/edgerunner](https://github.com/k-avi/edg
 [license-url]: https://github.com/k-avi/edgerunner/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [product-screenshot]: images/screenshot_edgerunner3.png
+[product-screenshot1]: images/screenshot_edgerunner1.png
