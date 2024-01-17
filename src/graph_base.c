@@ -418,14 +418,15 @@ static err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,u
         if((double)rand()/(double)RAND_MAX < pail ){
             if( i%n != n-1 ){
                 err_flag failure = app_link_graph(gsource, i, i+n+1);
-                def_err_handler(failure, "randomize_lattice app1", failure);
+                def_err_handler(failure ,"safe_randomize_lattice", failure);
                 added[i] = TRUE;  
             }
-        }if((double)rand()/(double)RAND_MAX < pajk ){
+        }
+        if((double)rand()/(double)RAND_MAX < pajk ){
             if(i%n != 0 ){
                 if(!added[i-1]){
                    err_flag failure = app_link_graph(gsource, i, i+n-1);
-                   def_err_handler(failure, "randomize_lattice app2", failure);
+                   def_err_handler(failure ,"safe_randomize_lattice", failure);
                 }
             }
         }
@@ -436,7 +437,7 @@ static err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,u
     init_dynl(&removed_links, gsource->nb_nodes *2);
     
     err_flag failure = generate_spanning_tree(gsource, gdest, &removed_links); 
-    def_err_handler(failure,"", failure);
+    def_err_handler(failure ,"safe_randomize_lattice", failure);
 
     uint32_t nb_delnodes = 0 ; 
     for(uint32_t i = 0 ; i < gdest->nb_nodes ; i++){
@@ -452,11 +453,17 @@ static err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,u
     nb_delnodes = nb_delnodes > darn.cur ? darn.cur : nb_delnodes;
     for(uint32_t i = 0 ; i < nb_delnodes ; i++){
         del_node_graph(gdest, darn.elems[i] - gdest->adjacency_lists);
+        def_err_handler(failure ,"safe_randomize_lattice", failure);
+
     }
     free_dynarr_nodes(&darn);
     for(uint32_t i = 0 ; i < removed_links.cur ; i++){
         if((double)rand()/(double)RAND_MAX < pal ){
-            app_link_graph(gdest, removed_links.elems[i].x, removed_links.elems[i].y);
+
+            if(! (gdest->adjacency_lists[removed_links.elems[i].x].cur == 0 && gdest->adjacency_lists[removed_links.elems[i].y].cur == 0)){
+                failure = app_link_graph(gdest, removed_links.elems[i].x, removed_links.elems[i].y);
+                def_err_handler(failure ,"safe_randomize_lattice", failure);
+            }
         }
     }
     free_dynl(&removed_links);  

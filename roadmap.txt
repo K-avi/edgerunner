@@ -1,16 +1,21 @@
 version beta : ---------------------------
 
+bug : 
+
+damn I'm getting close to release that's pretty cool 
+
+misc : 
+    -> build script (detect if libraries and so on)
+    -> document problems 
+    -> fancy readme.md / presentation for the github
+    -> manpage 
+
+version 1.0 : -----------------------
+
 misc : 
     -> delete useless code 
         -> merge ennemy.c and entities.c (or do I ?)
 
-misc : 
-    -> usage documentation ( at least for the options ...)
-    -> build script (detect if libraries and so on)
-    -> document problems 
-    -> fancy readme.md / presentation 
-
-version 1.0 : -----------------------
 
 -> REPLACE FREEFUNCTIONS BY FLUSH FUNCTIONS !!!!! WHY DO I FREE STUFF 
 FLUSH IT FFS 
@@ -22,6 +27,9 @@ ennemy :
 game : 
 -> save scores somewhere
 -> add special nodes (teleport nodes)
+-> add a key to open the door after a certain level 
+-> add an hp item 
+-> add a "map" item
 
 misc : 
 AI vs AI screensaver mode

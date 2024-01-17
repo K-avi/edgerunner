@@ -2,19 +2,16 @@
 #include "misc.h"
 #include "game.h"
 #include "points.h"
-
 #include <time.h>
-#include <unistd.h>
 
 bool colors_on = 0 ;
-void print_help(void){
-    printf("placeholder\n");
+static inline void print_help(void){
+    printf("edgerunner : command-line rogue like game based on graph exploration.\nUsage :\nedgerunner [option] [arguments]\n\nOptions : -[hx:y:n:fsc]\n 	   \nFor more help consult the manual  \n");
 }
 
 int main(int argc , char ** argv){
     
     //parse options 
-
     uint64_t opt_mask = 0;
     char c;
      while ((c = getopt(argc, argv, "hx:y:n:fsc")) != -1) {
@@ -55,14 +52,12 @@ int main(int argc , char ** argv){
             abort();
         }
     }
-
     if(opt_mask & 1){
-        printf("Edgerunner is a rogue-like where the character '@' tries to reach the exit node in a graph '%%' and avoid ennemies '!'\nFor details on usage check out the docs section.\n");
+        print_help();
         return ERR_OK;
     }
 
-    initscr();
-    
+    initscr(); 
     //handles size problems
     if(opt_mask & 0xE){
         int x,y;
@@ -117,7 +112,6 @@ int main(int argc , char ** argv){
         init_pair(6, -1, -1);
 
     }
-    
 
     time_t t;
     time(&t);
@@ -128,10 +122,9 @@ int main(int argc , char ** argv){
 
     declare_graph(g);
     declare_dynarr(dynarr_points, darp);
-  
-   
+    
     start_game(stdscr,&g,&darp);
     endwin();
-   
+ 
     return 0;
 }

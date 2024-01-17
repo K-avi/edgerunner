@@ -1,0 +1,6 @@
+edgerunner : command-line rogue like based on graph exploration 
+Usage : 
+  edgerunner [option] [arguments]
+Options : -[hx:y:n:fsc]
+ 	   
+For more help consult the manual  
