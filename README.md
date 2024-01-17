@@ -175,6 +175,8 @@ _For more informations, please refer to the manpage of the game or use the -h op
 - [ ] Items / special nodes 
 - [ ] Score enhancement (better score system and score saving)
 - [ ] Screensaver mode 
+- [ ] Make it so the ennemy still appears when it's on the exit node 
+- [ ] Fix spawn kill issues 
 
 See the [open issues](https://github.com/k-avi/edgerunner/issues) for a full list of proposed features (and known issues).
 
@@ -223,6 +225,7 @@ Project Link: [https://github.com/k-avi/edgerunner](https://github.com/k-avi/edg
 * [Readme Template](https://github.com/othneildrew/Best-README-Template)
 * [BsdRogue original paper](https://docs-archive.freebsd.org/44doc/usd/30.rogue/paper.pdf)
 * [Ncurses homepage](https://invisible-island.net/ncurses)
+* [Manpage template](https://tldp.org/HOWTO/Man-Page/q3.html)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

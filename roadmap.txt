@@ -1,8 +1,6 @@
 version beta : ---------------------------
 
-misc : 
-    -> build script (detect if libraries and so on)
-    -> manpage 
+ready for release ! :O 
 
 version 1.0 : -----------------------
 
