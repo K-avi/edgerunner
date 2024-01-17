@@ -129,6 +129,7 @@ old version of gcc.
 1. Clone the repo
    ```sh
    git clone https://github.com/k-avi/edgerunner.git
+   cd edgerunner
    ```
 2. you can use the build.sh script to compile edgerunner, add it to /usr/local/bin and add a manpage for edgerunner in /usr/local/share/man
    the script will also check for dependencies. If your linux does not have a /usr/local/share/man directory, the script won't create a man page.
@@ -136,11 +137,11 @@ old version of gcc.
    ```sh
    sudo bash build.sh 
    ```
-3. If you don't want to install edgerunner in /usr/local/bin , simply type
+3. If you don't want to install edgerunner in /usr/local/bin , and want to create a binary simply type
    ```sh
-   make edgerunner 
-   ```
-  to compile the program.
+   make edgerunner  
+   ``` 
+  
 4. If you built edgerunner with build.sh and want to remove it , use the uninstall.sh script.
    ```sh
    sudo bash uninstall.sh 
