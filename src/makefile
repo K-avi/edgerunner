@@ -10,7 +10,7 @@ DEBUG_FLAGS := -g -fsanitize=address -fsanitize=object-size -fno-optimize-siblin
 CFLAGS := -O1 -g -std=gnu17 -Wall -Wextra -Wpedantic -Wno-unused-parameter 
 LDFLAGS := -lcurses
 
-SRCS := misc.c graph_base.c points.c graph_curses.c game.c entities.c ennemy.c search_utils.c
+SRCS := misc.c graph_base.c points.c graph_curses.c game.c entities.c ennemy.c search_utils.c player_ai.c
 
 all: $(TARGET)
 

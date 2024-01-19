@@ -1,28 +1,57 @@
-version beta : ---------------------------
-
-ready for release ! :O 
-
 version 1.0 : -----------------------
 
-misc : 
-    -> delete useless code 
-        -> merge ennemy.c and entities.c (or do I ?)
+new feature  : 
+-> AI vs AI and / or screensaver mode
+    -> first implement a choice function based on shortest path
+       for test purpose 
+
+    -> then do something more "fair" by exploring nodes that "get you close" 
+       to the exit according to darp. When exploring make sure to close path you've seen 
+       and so on 
+            -> maintain an "explored" set and a "not explored" set 
+                -> explored contains node you've seen and  visited 
+                -> not explored contains the ones you've seen and not visited 
+                -> you go to the node in "not explored" that is the closest (in coordinates) 
+                   to the exit coordinates 
+                
+
+            -> then I'll have to figure a way to implement avoiding ennemies 
+
+    -> then do smtg similar to the ennemy fn structure and have 
+       multiple functions 
+
+    -> find a way to take ennemy into account 
 
 
--> REPLACE FREEFUNCTIONS BY FLUSH FUNCTIONS !!!!! WHY DO I FREE STUFF 
-FLUSH IT FFS 
+new feature : 
+-> save scores / leaderboard
 
--> create a menu in a window 
-
-ennemy : 
-->  sillier AI that isn't too dumb (ask fox)
-game : 
--> save scores somewhere
+gameplay improvements : 
 -> add special nodes (teleport nodes)
 -> add a key to open the door after a certain level 
 -> add an hp item 
 -> add a "map" item
 
-misc : 
-AI vs AI screensaver mode
+ennemy improvements: 
+->  sillier AI that isn't too dumb (ask fox)
+-> print ennemy when on the same node than exit 
+
+new feature : (might not implement it )
 2 player mode
+
+code improvements : 
+    
+    -> a lot of things memory allocation related things 
+       could be done more efficiently 
+
+        -> a good way to do all of that would be to use an Arena with a 
+           custom allocator
+
+            -> don't free graphs between levels ; just flush it 
+            -> keep as much arrays as possible 
+        -> however that would be a lot of efforts and idk how 
+           usefull that'll be 
+
+        -> I kinda want to implement an Arena for fun though so I might end up doing it 
+           but it's not a priority
+

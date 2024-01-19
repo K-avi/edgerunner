@@ -48,28 +48,6 @@ static inline err_flag realloc_deque(er_deque * dq, double coeff){
     def_err_handler(failure, "realloc_deque", failure);
     return ERR_OK;
 }//ok
-#ifdef debug
-static err_flag add_back_deque(er_deque * dq, struct s_graph_entry * elem){
-    /*
-    dq -> not null & initialized
-    adds elem to the back of the deque, see wiki on deque for more info
-    */
-    def_err_handler(!dq,"realloc_deque dq", ERR_NULL);
-    def_err_handler(!dq->elems,"realloc_deque dq->elems", ERR_NULL);
-
-    if(dq->max == dq->size){
-        err_flag failure = realloc_deque(dq, default_realloc);
-        def_err_handler(failure, "add_front_deque", failure);
-    }
-
-    int64_t back_idx =  (dq->start + dq->size) % dq->max;
-    dq->elems[back_idx] = elem;
-
-    dq->size ++;
-
-    return ERR_OK;
-}//ok 
-#endif
 
 static err_flag add_front_deque(er_deque * dq, struct s_graph_entry * elem){
     /*
@@ -266,7 +244,6 @@ err_flag deletable_nodes(er_graph * tree, er_dynarr_nodes * darn  ){
     return ERR_OK;
 }
 
-
 #ifdef debug
 static err_flag pop_front_deque(er_deque * dq, struct s_graph_entry ** elem){
     /*
@@ -283,5 +260,26 @@ static err_flag pop_front_deque(er_deque * dq, struct s_graph_entry ** elem){
 	dq->size--;
     return ERR_OK;
 }//ok
+
+static err_flag add_back_deque(er_deque * dq, struct s_graph_entry * elem){
+    /*
+    dq -> not null & initialized
+    adds elem to the back of the deque, see wiki on deque for more info
+    */
+    def_err_handler(!dq,"realloc_deque dq", ERR_NULL);
+    def_err_handler(!dq->elems,"realloc_deque dq->elems", ERR_NULL);
+
+    if(dq->max == dq->size){
+        err_flag failure = realloc_deque(dq, default_realloc);
+        def_err_handler(failure, "add_front_deque", failure);
+    }
+
+    int64_t back_idx =  (dq->start + dq->size) % dq->max;
+    dq->elems[back_idx] = elem;
+
+    dq->size ++;
+
+    return ERR_OK;
+}//ok 
 #endif
 

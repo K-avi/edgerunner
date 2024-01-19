@@ -1,7 +1,7 @@
 #include "game.h"
 #include "graph_curses.h"
 #include "misc.h"
-
+#include "player_ai.h"
 uint32_t def_distx = 6; 
 uint32_t def_disty = 6;
 bool fancy_mode = 1; 
@@ -21,6 +21,7 @@ static err_flag move_player(WINDOW * w, const er_graph * g , dynarr_points * dar
 
    
     if(index >= p->cur_node->cur){
+        def_war_handler(ERR_VALS, "err_vals", ERR_VALS);
         return ERR_OK;
     }
     for(uint32_t i = 0 ; i < p->cur_node->cur ; i++){
@@ -190,6 +191,122 @@ err_flag start_game(WINDOW * w , er_graph * g, dynarr_points * darp ){
     mvwprintw(w,0,0,"you scored %u points on level %u\n",nb_points, level);
     wrefresh(w);
     wgetch(w);
+
+    return ERR_OK ;
+}
+
+
+err_flag start_game_ai(WINDOW * w , er_graph * g, dynarr_points * darp, bool * quit){
+ 
+    def_err_handler(!w, "start_game w", ERR_NULL);
+    def_err_handler(!g,"start_game g", ERR_NULL);
+    def_err_handler(!darp, "start_game darp", ERR_NULL);
+    def_err_handler(g->nb_nodes > darp->cur, "start_game", ERR_VALS);
+
+
+    chtype ch = 0 ; 
+    uint32_t nb_points = 0;
+    uint32_t level = 0 ; 
+
+    //declares the entities 
+    declare_er_player(p,0,0);
+    declare_er_exit(e,0,0);
+    declare_er_ennemy(en,0,0);
+    declare_entab(entab);  
+
+    declare_gentities(gentities);
+    gentities.p = &p; 
+    gentities.ex = &e; 
+    gentities.ennemies = &entab ;
+
+    do{
+        level++; //increments level
+        uint32_t nb_pts_won = 20 ; //increments points
+
+        generate_level(g); //generates level
+        init_dynp(darp, default_arr_size);//shitty ; better flush it
+
+        if(level <= 4){ //adds a second ennemy after level 4
+            uint32_t indexes_incr[] = {2}; 
+            double coeffs_incr[1];
+            init_entab(&entab, 2);
+            append_entab(&entab, &en, &default_enrules);
+            coeffs_incr[0] = min((double)level/(double)10, 1);
+            update_entab(&entab, indexes_incr,coeffs_incr);
+        }else{ //updates the ennemy rules (makes them smarter :O)
+            uint32_t indexes_incr[] = {2,2}; 
+            double coeffs_incr[2];
+            init_entab(&entab, 2);
+            append_entab(&entab, &en, &default_enrules);
+            append_entab(&entab, &en, &default_enrules);
+            coeffs_incr[0] = min((double)level/(double)10, 1);
+            coeffs_incr[1] = min((double)level-3/(double)10, 1);
+            update_entab(&entab, indexes_incr,coeffs_incr);
+        }
+
+        gen_coordinates(row_size,row_size,darp); //generates coordinates of the nodes
+        init_ent_pos(&e,&p,&entab,g,darp); //initialized the ennemies 
+    
+        if(!fancy_mode){ //prints ugly stuff if ugly mode 
+            wprint_surroundings(w,&p,darp,def_distx,def_disty,g);
+            wprint_player(w,&p,def_distx, def_disty);
+            wprint_exit(w,&e,def_distx,def_disty);
+            wprint_entab(w,&entab,def_distx,def_disty);
+        }else{ //prints normal stuff otherwise
+            update_gprint_fancy(w, g, darp, &gentities);
+        }
+
+        while(p.cur_node != e.cur_node && ch!='q'){
+        //iterates while player hasn't reached the exit, the ennemy are not on ur node and 'q' isn't typed
+            ch = wgetch(w);
+
+            if( ch != 'q'){
+               
+                    nb_pts_won = nb_pts_won > 0 ? nb_pts_won - 1 : 0 ;
+
+                    int64_t chosen_node = -1;
+                    ai_shortest_path(w, &gentities, g, darp, &chosen_node);
+                    def_err_handler( (chosen_node == -1), "start_game_ai", ERR_VALS);
+
+                    err_flag failure = move_player(w,g,darp, &p,  (uint32_t) chosen_node);
+                    def_err_handler(failure, "start_game_ai", failure);
+
+                    bool lost = 0 ; 
+                    move_ennemies(w,&entab,&p,darp,g,&lost);
+
+                    if(!fancy_mode){
+                        wprint_surroundings(w,&p,darp,def_distx,def_disty,g);
+                        wprint_player(w,&p,def_distx, def_disty);
+                        wprint_exit(w,&e,def_distx,def_disty);
+                        wprint_entab(w,&entab,def_distx,def_disty);
+                    }else{
+                        update_gprint_fancy(w, g, darp, &gentities);        
+                    }
+
+                    if(lost && p.cur_node != e.cur_node){
+                        
+                        mvwprintw(w,0,0,"The ai died\n");
+                        wrefresh(w);
+                        wgetch(w);
+
+                        ch = 'q';
+                        break;  
+                    }    
+                }else{
+                    *quit = true;
+
+                }           
+            
+        }
+        nb_points += nb_pts_won;
+        reset_elements(g, darp, &p, &entab);
+        wclear(w);   
+    }while(ch != 'q');
+
+    mvwprintw(w,0,0,"The ai scored %u points on level %u\n",nb_points, level);
+    wrefresh(w);
+    wgetch(w);
+    wclear(w);
 
     return ERR_OK ;
 }

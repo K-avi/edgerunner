@@ -14,7 +14,7 @@ int main(int argc , char ** argv){
     //parse options 
     uint64_t opt_mask = 0;
     char c;
-     while ((c = getopt(argc, argv, "hx:y:n:fsc")) != -1) {
+     while ((c = getopt(argc, argv, "hx:y:n:fsca")) != -1) {
         
         switch (c) {
         case 'h': //help
@@ -40,9 +40,12 @@ int main(int argc , char ** argv){
             opt_mask |= 1<<5;
             printf("placeholder : score saving isn't implemented yet\n");
             break;  
-        case 'c': //prints high scores and exits
+        case 'c': //turns off colors
             opt_mask |= 1<<6;
             colors_on = false ; 
+            break; 
+        case 'a': 
+            opt_mask |= 1<<7; //ai vs ai mode
             break; 
         case '?':
             
@@ -123,7 +126,16 @@ int main(int argc , char ** argv){
     declare_graph(g);
     declare_dynarr(dynarr_points, darp);
     
-    start_game(stdscr,&g,&darp);
+    if(! (opt_mask & 1<<7) ){
+        start_game(stdscr,&g,&darp);
+    }else{
+        bool quit = false ;
+        wtimeout(stdscr,500);
+
+        while(!quit){
+            start_game_ai(stdscr,&g, &darp, &quit);
+        }
+    }
     endwin();
  
     return 0;

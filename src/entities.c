@@ -41,17 +41,31 @@ static err_flag init_ennemy_pos(er_ennemy * en , er_graph * g,  dynarr_points * 
     darp -> not null & init 
     pl -> not null & init
     */
-    uint32_t en_index = rand()%darp->cur ;
-    while(en_index == player_index || en_index == exit_index || g->adjacency_lists[en_index].cur == 0 ){
-        en_index = rand()%darp->cur;
+    declare_dynarr(er_dynarr_nodes, darn);
+    init_dynarr_nodes(&darn, g->nb_nodes);
+    for(uint32_t i = 0 ; i < g->nb_nodes ; i++){
+        if(! ( i == player_index || i == exit_index) ){
+            bool found = false; 
+            for(uint32_t j = 0 ; j < g->adjacency_lists[i].cur ; j++){
+                if( ( g->adjacency_lists[i].neighboors_ref[j] - g->adjacency_lists == player_index)){
+                   found = true ; 
+                }
+            }
+            if(!found && g->adjacency_lists[i].cur){
+                push_dynarr_nodes(&darn, &g->adjacency_lists[i]);
+            }
+        }
     }
+    
+    uint32_t en_index = darn.elems[rand()%darn.cur] - g->adjacency_lists;
+    free_dynarr_nodes(&darn);
 
     en->x = darp->elems[en_index].x;
     en->y = darp->elems[en_index].y;
     en->cur_node = &g->adjacency_lists[en_index];
 
    return ERR_OK;
-}//ok
+}//ok; unsage (doesnt check for shit)
 
 static err_flag init_pos_entab(er_entab * entab,er_graph * g,  dynarr_points * darp, uint32_t player_index, uint32_t exit_index){
 
@@ -80,8 +94,7 @@ err_flag wprint_entity(WINDOW * w , er_player * pl, uint32_t distx, uint32_t dis
 }//ok
 
 err_flag wprint_surroundings(WINDOW *w ,er_entity * en , dynarr_points * darp, uint32_t distx, uint32_t disty, const er_graph * g ){
-    /*
-    */
+
    g->printed_nodes[en->cur_node - g->adjacency_lists] = 1 ;
    for(uint32_t i = 0 ; i < en->cur_node->cur; i++){
         uint32_t index = en->cur_node->neighboors_ref[i] - g->adjacency_lists;

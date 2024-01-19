@@ -28,4 +28,6 @@ extern err_flag start_game(WINDOW * w, er_graph * g, dynarr_points * darp );
         but could be local variables to the function tbh
 */
 
+extern err_flag start_game_ai(WINDOW * w , er_graph * g, dynarr_points * darp, bool * quit );
+
 #endif
