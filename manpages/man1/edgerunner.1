@@ -15,20 +15,22 @@ has to enter a number, corresponding to one of the nodes they can go to.
 The player must also avoid ennemies, represented by '!'. If the ennemy 
 manages to reach the player's node, the game will end.
 .SH OPTIONS
-.IP -h
-Prints help and exits.
+.IP -a
+Starts the AI vs AI mode instead of the interactive game.
+.IP -c
+turns off the colors
 .IP -f
 Forces the 'fancy mode' to be turned off. 
+.IP -h
+Prints help and exits.
+.IP "-n integer"
+Overriddes the default size of the grid used to generate the graphs.
 .IP -s
 Prtins the high scores in stdout and exits (not implemented at the moment)
-.IP -c
-turns off the colors.
 .IP "-x integer"
 Overrides the default horizontal distance between nodes.
 .IP "-y integer"
 Overrides the default vertical distance between nodes.
-.IP "-n integer"
-Overriddes the default size of the grid used to generate the graphs.
 .SH FILES
 None at the moment
 .SH DIAGNOSTICS
