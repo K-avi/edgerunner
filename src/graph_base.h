@@ -31,6 +31,7 @@ err_flag init_dynarr_nodes( er_dynarr_nodes * darn, uint32_t size);
 err_flag push_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry * elem);
 void free_dynarr_nodes( er_dynarr_nodes * dynarr);
 err_flag pop_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry ** elem);
+err_flag del_dynarr_nodes(er_dynarr_nodes * dynarr, struct s_graph_entry * elem);
 
 //adjacency list structure
 typedef struct s_graph_entry{

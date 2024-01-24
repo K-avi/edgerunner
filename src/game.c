@@ -266,6 +266,9 @@ err_flag start_game_ai(WINDOW * w , er_graph * g, dynarr_points * darp, bool * q
 
                     int64_t chosen_node = -1;
                     ai_shortest_path(w, &gentities, g, darp, &chosen_node);
+
+                    //ai_realist(w, &gentities, g,&psinfo, darp, &chosen_node);
+
                     def_err_handler( (chosen_node == -1), "start_game_ai", ERR_VALS);
 
                     err_flag failure = move_player(w,g,darp, &p,  (uint32_t) chosen_node);

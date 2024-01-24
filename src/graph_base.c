@@ -394,6 +394,23 @@ err_flag pop_dynarr_nodes( er_dynarr_nodes * dynarr, struct s_graph_entry ** ele
       return ERR_OK;
 }
 
+err_flag del_dynarr_nodes(er_dynarr_nodes * dynarr, er_adjlist * elem){
+    def_err_handler(!dynarr, "pop_dynarr dynarr", ERR_NULL);
+    def_err_handler(!elem, "pop_dynarr elem", ERR_NULL);
+
+    if(dynarr->cur == 0 ){
+        return ERR_OK;
+    }else{
+        for(uint32_t i = 0 ; i < dynarr->cur ; i++){
+            if(dynarr->elems[i] == elem){
+                dynarr->elems[i] = dynarr->elems[--dynarr->cur] ; 
+                break;
+            }
+        }
+    }
+    return ERR_OK;
+}
+
 
 
 static err_flag safe_randomize_lattice( er_graph * gsource , er_graph * gdest ,uint32_t n, double pail, double pajk, double pdn, double pal){

@@ -132,3 +132,4 @@ err_flag pop_dynarr( er_dynaru32 * dynarr, int64_t * elem){
       }
       return ERR_OK;
 }
+

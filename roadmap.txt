@@ -1,11 +1,9 @@
 version 1.0 : -----------------------
 
 new feature  : 
--> AI vs AI and / or screensaver mode
-    -> first implement a choice function based on shortest path
-       for test purpose 
+-> AI vs AI and / screensaver mode
 
-    -> then do something more "fair" by exploring nodes that "get you close" 
+    -> do something more "fair" by exploring nodes that "get you close" 
        to the exit according to darp. When exploring make sure to close path you've seen 
        and so on 
             -> maintain an "explored" set and a "not explored" set 
@@ -22,22 +20,27 @@ new feature  :
 
     -> find a way to take ennemy into account 
 
+psinfo is fucking stupid. Every relevant information is already on the fucking graph ffs.
+Redo the structure from scratch taking that into account. 
+
 
 new feature : 
 -> save scores / leaderboard
 
 gameplay improvements : 
+
 -> add special nodes (teleport nodes)
 -> add a key to open the door after a certain level 
--> add an hp item 
+-> add an hp  / extra life / shield
 -> add a "map" item
+-> have AIs spawn at certain levels, get a bonus if you finish the level 
+   before them 
+-> improve the score system
 
 ennemy improvements: 
 ->  sillier AI that isn't too dumb (ask fox)
 -> print ennemy when on the same node than exit 
-
-new feature : (might not implement it )
-2 player mode
+-> I think the stay function is bugged
 
 code improvements : 
     

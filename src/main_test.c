@@ -245,6 +245,7 @@ printf("\n\n\n");
     free_dynp(&darp);
     */
 
+    /*
     declare_graph(gsource); 
    // declare_graph(gdest); 
 
@@ -265,6 +266,34 @@ printf("\n\n\n");
     free_graph(&gsource); 
     //free_graph(&gdest);
     free_dynp(&darp);
+    */
+
+    declare_dynarr(er_heapu32, heap);
+
+    init_heap(&heap, 1);
+
+   add_heap(&heap, 5); 
+
+   add_heap(&heap, 1); 
+   add_heap(&heap, 3); 
+   add_heap(&heap, 10); 
+
+   add_heap(&heap, 6); 
+    add_heap(&heap, 2);
+    add_heap(&heap, 7);
+
+    for(uint32_t j = 0 ; j < 6 ; j++){
+        int64_t elem=-1;
+        pop_heap(&heap, &elem);
+        for(uint32_t i = 0 ; i<heap.cur; i++){
+           
+            printf("%u ", heap.elems[i]);
+        }
+        printf("\n");
+    }
+    
+
+    free_heap(&heap);
 
     return 0 ; 
 }
